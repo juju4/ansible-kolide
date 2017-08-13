@@ -1,0 +1,7 @@
+---
+
+- name: reload kolide
+  service:
+    name: kolide
+    state: restarted
+

@@ -1,0 +1,6 @@
+---
+
+kolide_pkgs:
+  - kolide
+  - acl
+

@@ -1,0 +1,15 @@
+mysql:
+  address: 127.0.0.1:3306
+  database: {{ kolide_mysql_db }}
+  username: {{ kolide_mysql_user }}
+  password: {{ kolide_mysql_pass }}
+redis:
+  address: 127.0.0.1:6379
+server:
+  cert: {{ kolide_certificate_cert }}
+  key: {{ kolide_certificate_key }}
+logging:
+  json: true
+osquery:
+  result_log_file: {{ kolide_logdir }}/osquery_result
+  status_log_file: {{ kolide_logdir }}/osquery_status

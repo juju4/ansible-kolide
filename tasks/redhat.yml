@@ -1,0 +1,12 @@
+---
+## https://docs.kolide.co/kolide/current/infrastructure/kolide-on-centos.html
+
+- name: add kolide yum repository
+  yum:
+    name: https://dl.kolide.co/yum/kolide-yum-repo-1.0.0-1.noarch.rpm
+    state: present
+
+- name: add mysql community yum repository
+  yum:
+    name: http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+    state: present

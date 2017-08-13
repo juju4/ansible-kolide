@@ -1,0 +1,28 @@
+---
+## https://docs.kolide.co/kolide/current/infrastructure/kolide-on-ubuntu.html
+## not public anymore?
+
+- block:
+    - name: add kolide apt key
+      apt_key:
+        url: "https://dl.kolide.co/archive.key"
+        state: present
+
+    - name: add kolide repository
+      apt_repository:
+        repo: "deb https://dl.kolide.co/apt jessie main"
+        state: present
+  when: kolide_apt_repo
+
+- block:
+    - name: Download kolide package
+      get_url:
+        url: "{{ kolide_deb }}"
+        dest: "/var/tmp/{{ kolide_deb | basename }}"
+        mode: '0644'
+        checksum: "sha256:{{ kolide_deb_sha256 }}"
+    - name: Install kolide package
+      apt:
+        deb: "/var/tmp/{{ kolide_deb | basename }}"
+        state: present
+  when: not kolide_apt_repo

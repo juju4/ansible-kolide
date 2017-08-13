@@ -1,0 +1,72 @@
+{
+  "api": {
+    "tls_hostname": "https://{{ zentral_cn }}",
+    "tls_server_certs": "{{ zentral_certificate_cert_fullchain }}",
+    "secret": "{{ api_secret }}"
+  },
+  "extra_links": [
+    {"anchor_text": "Prometheus",
+     "url": "https://{{ zentral_cn }}/prometheus/"}
+  ],
+  "django": {
+    "SECRET_KEY": "{{ django_secret }}",
+    "DEBUG": true,
+    "ADMINS": [
+      [
+        "Admin",
+        "{{ zentral_admin_email }}"
+      ]
+    ],
+    "SERVER_EMAIL": "{{ zentral_admin_email }}",
+    "DEFAULT_FROM_EMAIL": "{{ zentral_admin_email }}",
+    "ALLOWED_HOSTS": [
+{% for host in zentral_allowed_hosts %}
+      "{{ host }}"{% if not loop.last %},{% endif %}
+{% endfor %}
+    ]
+  },
+{% if zentral_rabbitmq_enable %}
+  "queues": {
+    "backend": "zentral.core.queues.backends.kombu",
+    "backend_url": "amqp://guest:guest@rabbitmq:5672//"
+  },
+{% endif %}
+  "stores": {
+    "elasticsearch": {
+      "frontend": true,
+      "backend": "zentral.core.stores.backends.elasticsearch",
+      "servers": [
+{% for host in zentral_elastic_servers %}
+        "{{ host }}"{% if not loop.last %},{% endif %}
+{% endfor %}
+      ],
+      "index": "zentral-events",
+      "kibana_base_url": "{{ zentral_kibana_base_url }}"
+    }
+  },
+  "processor_workers": {
+    "number": 1,
+    "prometheus_server_base_port": "8100"
+  },
+  "actions": {
+    "debug": {
+      "backend": "zentral.core.actions.backends.json_file",
+      "local_dir": "/tmp/zentral_notifications/"
+    }
+  },
+  "apps": {
+    "zentral.contrib.inventory": {
+      "prometheus_bearer_token": "{{ prometheus_secret }}",
+      "clients": [
+        {
+          "backend": "zentral.contrib.inventory.clients.dummy"
+        }
+      ]
+    },
+    "zentral.contrib.jamf": {},
+    "zentral.contrib.munki": {},
+    "zentral.contrib.nagios": {},
+    "zentral.contrib.osquery": {},
+    "zentral.contrib.santa": {}
+  }
+}

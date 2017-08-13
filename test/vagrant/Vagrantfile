@@ -1,0 +1,71 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+## for xenial, need to manually install python as python v2 is not in default image.
+    #config.vm.box = "ubuntu/xenial64"
+    #config.vm.box = "boxcutter/ubuntu1604"
+    #config.vm.box = "ubuntu/trusty64"
+    config.vm.box = "centos/7"
+
+    config.vm.provision :ansible do |ansible|
+       ansible.playbook = "site.yml"
+       #ansible.verbose = "vvvv"
+       #ansible.host_key_checking = false
+       #ansible.limit = 'all'
+       ansible.sudo = true
+       ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
+       ansible.groups = {
+          "vagrantselect" => ["vkolide" ],
+       }
+    end
+
+    config.vm.define "vkolide" do |vkolide|
+        vkolide.vm.hostname = "vkolide"
+        vkolide.vm.provider "virtualbox" do |v|
+          v.memory = 1024
+        end
+        vkolide.vm.network "forwarded_port", guest: 8080, host: 9080
+        vkolide.vm.network "private_network", ip: "192.168.33.10"
+    end
+
+    config.vm.define "kolideclient" do |kolideclient|
+      kolideclient.vm.box = "centos/7"
+      kolideclient.vm.hostname = 'kolideclient1'
+      kolideclient.vm.network "private_network", ip: "192.168.33.15"
+      kolideclient.vm.provision "shell", inline: <<-SHELL
+        sudo rpm -ivh https://osquery-packages.s3.amazonaws.com/centos7/noarch/osquery-s3-centos7-repo-1-0.0.noarch.rpm
+        sudo yum -y install osquery
+        echo '192.168.33.10 kolide' >> /etc/hosts
+        echo 'M/G9b1dvS/fDeOMzC9bhnGOfqe66xRvK' > /var/osquery/enroll_secret
+        install -m 644 /vagrant/kolide.crt /var/osquery/server.pem
+        cat > /etc/osquery/osquery.flags <<EOF
+--enroll_secret_path=/var/osquery/enroll_secret
+--tls_server_certs=/var/osquery/server.pem
+--tls_hostname=kolide:8080
+--host_identifier=hostname
+--enroll_tls_endpoint=/api/v1/osquery/enroll
+--config_plugin=tls
+--config_tls_endpoint=/api/v1/osquery/config
+--config_tls_refresh=10
+--disable_distributed=false
+--distributed_plugin=tls
+--distributed_interval=3
+--distributed_tls_max_attempts=3
+--distributed_tls_read_endpoint=/api/v1/osquery/distributed/read
+--distributed_tls_write_endpoint=/api/v1/osquery/distributed/write
+--logger_plugin=tls
+--logger_tls_endpoint=/api/v1/osquery/log
+--logger_tls_period=10
+EOF
+        sudo install -m 644 /vagrant/127.0.0.1-8412.pem /var/osquery/server.pem
+        /usr/bin/osqueryd --flagfile=/etc/osquery/osquery.flags --config_check
+        sudo systemctl restart osqueryd
+      SHELL
+    end
+
+end
+

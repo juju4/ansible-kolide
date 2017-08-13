@@ -1,0 +1,34 @@
+---
+
+kolide_apt_repo: false
+kolide_deb: https://dl.kolide.co/deb/kolide_1.0.4_amd64.deb
+kolide_deb_sha256: 6bc71e408af628f9e2213e1f859e33e8c5703886413b45529e9a5b30a43837aa
+
+kolide_ip_listen: 0.0.0.0
+kolide_port: 8000
+#kolide_admin_email: 'changethis@example.com'
+
+kolide_uid: 900
+kolide_homedir: /var/_kolide
+kolide_service_enabled: true
+kolide_logdir: /var/log/kolide
+
+kolide_mysql_user: kolide
+## https://dev.mysql.com/doc/refman/5.7/en/validate-password-plugin.html
+kolide_mysql_pass: "Kolide!2017@"
+kolide_mysql_db: kolidedb
+kolide_mysql_root_pass: "Toor=2017."
+
+kolide_cn: kolide
+kolide_certificate_key: ''
+kolide_certificate_cert: ''
+## above empty value, will trigger self-signed certificate with following path
+#kolide_certificate_key: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
+#kolide_certificate_cert: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
+kolide_certificate_cert_fullchain: "{{ kolide_homedir }}/kolide/conf/start/docker/tls/kolide_fullchain.crt"
+kolide_certificate_root_ca: ''
+kolide_certinfo: '/C=US/ST=CA/L=San Francisco/O=Ansible kolide'
+kolide_certduration: 365
+
+kolide_license_file: ''
+#kolide_license_file: license.txt

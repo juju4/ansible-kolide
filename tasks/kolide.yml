@@ -1,0 +1,169 @@
+---
+
+- name: Install kolide packages
+  package: name={{ item }} state=present
+  with_items: "{{ kolide_pkgs }}"
+
+- name: ensure mysqld is enabled and started
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
+- name: recover mysqld temporary password
+  command: "awk '/temporary password/ { print $NF }' /var/log/mysqld.log"
+  register: tmppass
+  changed_when: false
+- debug: var=tmppass.stdout
+- set_fact:
+    mysql_user: root
+    mysql_pass: "{{ tmppass.stdout }}"
+- name: install mysql local configuration for root user
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+    mode: '0600'
+    backup: yes
+## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
+- name: change mysqld root password
+  shell: mysql -u root --connect-expired-password -e "alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';"
+  ignore_errors: true
+- name: remove mysql local configuration for root user
+  file:
+    dest: /root/.my.cnf
+    state: absent
+
+- name: Create kolide mysql database
+  mysql_db:
+    name: "{{ kolide_mysql_db }}"
+    state: present
+    login_user: root
+    login_password: "{{ kolide_mysql_root_pass }}"
+
+- name: Create kolide mysql user
+  mysql_user:
+    name: "{{ kolide_mysql_user }}"
+    password: "{{ kolide_mysql_pass }}"
+    priv: "{{ kolide_mysql_db }}.*:ALL"
+    state: present
+    login_user: root
+    login_password: "{{ kolide_mysql_root_pass }}"
+
+- name: add kolide unix group
+  group:
+    name: _kolide
+    state: present
+
+- name: add kolide unix user
+  user:
+    name: _kolide
+    group: _kolide
+    uid: "{{ kolide_uid }}"
+    shell: /bin/false
+    home: "{{ kolide_homedir }}"
+
+- name: ensure directories exist
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: _kolide
+    group: _kolide
+    mode: '0755'
+  with_items:
+    - /etc/kolide
+    - "{{ kolide_logdir }}"
+
+#- include: secret.yml
+#- set_fact:
+#    api_secret: "{{ rand.stdout }}"
+
+- block:
+    - include: certificate-selfsigned.yml
+    - set_fact:
+        kolide_certificate_key: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
+        kolide_certificate_cert: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
+  when: kolide_certificate_cert == ''
+- name: ensure certificates is readable by kolide user
+  acl:
+    path: "{{ item }}"
+    entity: _kolide
+    etype: user
+    permissions: r
+    state: present
+  with_items:
+    - "{{ kolide_certificate_key }}"
+    - "{{ kolide_certificate_cert }}"
+
+- name: configure kolide
+  template:
+    src: kolide.yml.j2
+    dest: "/etc/kolide/kolide.yml"
+    mode: '0644'
+    backup: yes
+    #validate: 'ruby -e "require \'yaml\'; YAML.load_file(\'%s\')"'
+
+## FIXME/centos7! FAILED! => {"changed": true, "cmd": ["/usr/bin/kolide", "prepare", "db", "--config", "/etc/kolide/kolide.yml"], "delta": "0:00:00.036057", "end": "2017-01-01 12:12:07.384928", "failed": true, "rc": 1, "start": "2017-01-01 12:12:07.348871", "stderr": "2017/01/01 12:12:07 FAIL 20161118212436_CreateTableDistributedQueryCampaigns.go (Error 1293: Incorrect table definition; there can be only one TIMESTAMP column with CURRENT_TIMESTAMP in DEFAULT or ON UPDATE clause), quitting migration.", "stdout": "Using config file:  /etc/kolide/kolide.yml", "stdout_lines": ["Using config file:  /etc/kolide/kolide.yml"], "warnings": []}
+- name: check db prepare marker
+  stat: path=/etc/kolide/.preparedb
+  register: db
+- block:
+    - name: prepare kolide db
+      command: /usr/bin/kolide prepare db --config /etc/kolide/kolide.yml
+    - name: add db prepare marker
+      file: dest=/etc/kolide/.preparedb state=touch
+  when: not db.stat.exists
+
+
+- include: kolide-license.yml
+  when: kolide_license_file != ''
+
+## also have users and org to fill...
+## INSERT INTO `app_configs` VALUES (1,'OrgName','','https://kolidefqdn:9080',0,'','',587,0,1,0,'','','',1,1,'xxxxxx');
+## INSERT INTO `users` VALUES (1,'2017-01-01 12:12:14','2017-01-01 12:12:14',NULL,0,'<username>','xxxxx','xxxxxx','','<useremail>',1,1,0,'','');
+
+- block:
+    - name: install kolide systemd configuration
+      template:
+        src: "systemd-{{ item }}.service.j2"
+        dest: "/lib/systemd/system/{{ item }}.service"
+        mode: '0644'
+        backup: yes
+      with_items:
+        - kolide
+      register: systemdconf
+      ignore_errors: true
+    - block:
+        - include: "immutable.yml target_dir=/lib/systemd/system state=pre"
+        - name: install kolide systemd configuration
+          template:
+            src: "systemd-{{ item }}.service.j2"
+            dest: "/lib/systemd/system/{{ item }}.service"
+            mode: '0644'
+            backup: yes
+          with_items:
+            - kolide
+        - include: "immutable.yml target_dir=/lib/systemd/system state=post"
+      when: systemdconf|failed
+    - block:
+        - name: enable and start kolide systemd services
+          service:
+            name: "{{ item }}"
+            enabled: yes
+            state: 'started'
+          ignore_errors: true
+          with_items:
+            - kolide
+      when: kolide_service_enabled
+    - block:
+        - name: disable and stop kolide systemd service
+          service:
+            name: "{{ item }}"
+            enabled: no
+            state: 'stopped'
+          ignore_errors: true
+          with_items:
+            - kolide
+      when: not kolide_service_enabled
+  when: ansible_service_mgr == 'systemd'
+

@@ -1,0 +1,42 @@
+---
+
+- set_fact:
+    mysql_user: "{{ kolide_mysql_user }}"
+    mysql_pass: "{{ kolide_mysql_pass }}"
+- name: install local mysql configuration for kolide user
+  template:
+    src: my.cnf.j2
+    dest: "{{ kolide_homedir }}/.my.cnf"
+    owner: _kolide
+
+- name: check if license is configured
+  command: mysql kolidedb -e "SELECT licenses.token FROM licenses WHERE id=1;" -sN
+  changed_when: false
+  become: yes
+  become_user: _kolide
+  register: currentlicense
+#- debug: var=currentlicense
+
+- block:
+    - name: recover certificate content
+      command: "cat {{ kolide_certificate_cert }}"
+      changed_when: false
+      register: crt
+    - set_fact:
+        license: "{{ lookup('file', kolide_license_file) }}"
+        certificate: "{{ crt.stdout }}"
+    - name: insert license into mysql database
+      command: mysql kolidedb -e "UPDATE licenses SET licenses.key = '{{ certificate }}', licenses.token = '{{ license }}' WHERE id=1;" -sN
+      become: yes
+      become_user: _kolide
+      notify:
+        - reload kolide
+  when: currentlicense is defined and currentlicense.stdout is defined and currentlicense.stdout == 'NULL'
+
+- name: check if license is configured
+  command: mysql kolidedb -e "SELECT * FROM licenses WHERE id=1;" -sN
+  changed_when: false
+  become: yes
+  become_user: _kolide
+  register: currentlicense
+#- debug: var=currentlicense
