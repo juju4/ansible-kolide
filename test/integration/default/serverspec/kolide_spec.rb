@@ -32,7 +32,7 @@ describe port(8080) do
   it { should be_listening.with('tcp') }
 end
 
-describe file('/var/log/syslog'), :if => os[:family] == 'debian' or :if => os[:family] == 'ubuntu' do
+describe file('/var/log/syslog'), :if => os[:family] == 'debian' || :if => os[:family] == 'ubuntu' do
   its(:content) { should match /kolide: Using config file:/ }
   its(:content) { should match /kolide: {"component":"license-checker","msg":"starting"/ }
   its(:content) { should match /kolide: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
