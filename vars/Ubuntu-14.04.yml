@@ -4,6 +4,8 @@ kolide_pkgs:
   - kolide
   - acl
 
+mysql_svc: mysql
+
 ssl_user: ssl-cert
 ssl_dir: /etc/ssl
 ssl_privatedir: /etc/ssl/private
