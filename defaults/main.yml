@@ -17,7 +17,7 @@ kolide_mysql_user: kolide
 ## https://dev.mysql.com/doc/refman/5.7/en/validate-password-plugin.html
 kolide_mysql_pass: "Kolide!2017@"
 kolide_mysql_db: kolidedb
-kolide_mysql_root_pass: "Toor=2017."
+kolide_mysql_root_pass: "{{ mysql_root_password | default('Toor=2017.') }}"
 
 kolide_cn: kolide
 kolide_certificate_key: ''

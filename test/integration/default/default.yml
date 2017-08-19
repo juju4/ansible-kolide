@@ -13,5 +13,5 @@
           priv: "{{ kolide_mysql_db }}.*:ALL"
     - mysql_enablerepo: epel
   roles:
+    - { role: geerlingguy.mysql, when: ansible_os_family == 'Debian' }
     - juju4.kolide
-

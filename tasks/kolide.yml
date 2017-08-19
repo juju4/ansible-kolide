@@ -6,33 +6,35 @@
 
 - name: ensure mysqld is enabled and started
   service:
-    name: mysqld
+    name: "{{ mysql_svc | default('mysqld') }}
     state: started
     enabled: yes
 
+- block:
 ## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
-- name: recover mysqld temporary password
-  command: "awk '/temporary password/ { print $NF }' /var/log/mysqld.log"
-  register: tmppass
-  changed_when: false
-- debug: var=tmppass.stdout
-- set_fact:
-    mysql_user: root
-    mysql_pass: "{{ tmppass.stdout }}"
-- name: install mysql local configuration for root user
-  template:
-    src: my.cnf.j2
-    dest: /root/.my.cnf
-    mode: '0600'
-    backup: yes
+    - name: recover mysqld temporary password
+      command: "awk '/temporary password/ { print $NF }' /var/log/mysqld.log"
+      register: tmppass
+      changed_when: false
+    - debug: var=tmppass.stdout
+    - set_fact:
+        mysql_user: root
+        mysql_pass: "{{ tmppass.stdout }}"
+    - name: install mysql local configuration for root user
+      template:
+        src: my.cnf.j2
+        dest: /root/.my.cnf
+        mode: '0600'
+        backup: yes
 ## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
-- name: change mysqld root password
-  shell: mysql -u root --connect-expired-password -e "alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';"
-  ignore_errors: true
-- name: remove mysql local configuration for root user
-  file:
-    dest: /root/.my.cnf
-    state: absent
+    - name: change mysqld root password
+      shell: mysql -u root --connect-expired-password -e "alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';"
+      ignore_errors: true
+    - name: remove mysql local configuration for root user
+      file:
+        dest: /root/.my.cnf
+        state: absent
+  when: ansible_os_family == 'RedHat'
 
 - name: Create kolide mysql database
   mysql_db:

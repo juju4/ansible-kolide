@@ -32,6 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vkolide.vm.network "private_network", ip: "192.168.33.10"
     end
 
+## enroll_secret and kolide.crt needs to be recovered manually currently
     config.vm.define "kolideclient" do |kolideclient|
       kolideclient.vm.box = "centos/7"
       kolideclient.vm.hostname = 'kolideclient1'

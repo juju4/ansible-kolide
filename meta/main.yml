@@ -27,5 +27,5 @@ galaxy_info:
   - security
 dependencies:
   - juju4.redhat-epel
-  - geerlingguy.mysql
+#  - geerlingguy.mysql
   - geerlingguy.redis
