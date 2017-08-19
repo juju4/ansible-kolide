@@ -3,6 +3,8 @@
 - hosts: all
 #- hosts: test-kitchen
   vars:
+    - mysql_root_password: 'Toor=2017.'
+    - kolide_mysql_root_pass: "{{ mysql_root_password }}"
     - mysql_databases:
         - name: "{{ kolide_mysql_db }}"
     - mysql_users:
