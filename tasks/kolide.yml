@@ -6,7 +6,7 @@
 
 - name: ensure mysqld is enabled and started
   service:
-    name: "{{ mysql_svc | default('mysqld') }}
+    name: "{{ mysql_svc | default('mysqld') }}"
     state: started
     enabled: yes
 
