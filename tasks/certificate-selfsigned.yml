@@ -13,9 +13,9 @@
 
 - name: Generate SSL self-signed certificate
   command: >
-    openssl req -x509 -nodes -sha256 -days {{ kolide_certduration }} -newkey rsa:2048 
+    openssl req -x509 -nodes -sha256 -days {{ kolide_certduration }} -newkey rsa:2048
         -subj "{{ kolide_certinfo }}/CN={{ kolide_cn }}"
-        -keyout {{ ssl_privatedir }}/{{ ansible_fqdn }}.key 
+        -keyout {{ ssl_privatedir }}/{{ ansible_fqdn }}.key
         -out {{ ssl_dir }}/{{ ansible_fqdn }}.crt
         creates={{ ssl_dir }}/{{ ansible_fqdn }}.crt
 
