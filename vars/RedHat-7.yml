@@ -9,5 +9,5 @@ kolide_pkgs:
 mysql_svc: mysqld
 
 ssl_user: root
-ssl_dir: /etc/pki/tls
+ssl_dir: /etc/pki/tls/certs
 ssl_privatedir: /etc/pki/tls/private
