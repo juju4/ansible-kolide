@@ -10,14 +10,6 @@ set :backend, :exec
 #end
 
 
-describe service('mysqld') do
-  it { should be_enabled }
-  it { should be_running }
-end  
-describe service('redis') do
-  it { should be_enabled }
-  it { should be_running }
-end  
 describe service('kolide') do
   it { should be_enabled }
   it { should be_running }
@@ -44,5 +36,3 @@ describe file('/var/log/messages'), :if => os[:family] == 'redhat' do
   its(:content) { should match /kolide: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
   its(:exit_status) { should eq 0 }
 end
-
-
