@@ -9,3 +9,6 @@ mysql_svc: mysql
 ssl_user: ssl-cert
 ssl_dir: /etc/ssl
 ssl_privatedir: /etc/ssl/private
+
+redis_svc: redis-server
+redis_conf: /etc/redis/redis.conf

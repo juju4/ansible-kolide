@@ -76,8 +76,9 @@
     - /etc/kolide
     - "{{ kolide_logdir }}"
 
-#- include: secret.yml
-#- set_fact:
+- include: secret.yml
+- set_fact:
+    kolide_auth_jwt_key: "{{ rand.stdout }}"
 #    api_secret: "{{ rand.stdout }}"
 
 - block:

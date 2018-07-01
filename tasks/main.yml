@@ -13,5 +13,6 @@
 - include: redhat.yml
   when: ansible_os_family == "RedHat"
 
+- include: redis-secure.yml
 - include: kolide.yml
 

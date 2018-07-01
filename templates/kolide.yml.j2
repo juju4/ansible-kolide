@@ -7,11 +7,25 @@ mysql:
   password: {{ kolide_mysql_pass }}
 redis:
   address: 127.0.0.1:6379
+  password: {{ kolide_redis_password }}
 server:
   cert: {{ kolide_certificate_cert }}
   key: {{ kolide_certificate_key }}
+  tls: {{ kolide_server_tls | default('true') }}
+auth:
+  jwt_key: {{ kolide_auth_jwt_key }}
 logging:
   json: true
+  debug: false
+  disable_banner: false
 osquery:
   result_log_file: {{ kolide_logdir }}/osquery_result
   status_log_file: {{ kolide_logdir }}/osquery_status
+  enable_log_rotation: true
+  label_query_update_interval: 1h
+app:
+  token_key_size: 36
+  invite_token_validity_period: 1d
+session:
+  key_size: 64
+  duration: 30d

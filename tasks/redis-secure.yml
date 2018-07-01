@@ -1,0 +1,17 @@
+---
+# https://redis.io/topics/security
+# https://www.digitalocean.com/community/tutorials/how-to-secure-your-redis-installation-on-ubuntu-18-04
+
+- name: redis | require password
+  lineinfile:
+    dest: "{{ redis_conf }}"
+    regexp: '^requirepass .*'
+    line: "requirepass {{ kolide_redis_password }}"
+    backup: yes
+
+- name: redis | rename dangerous commands
+  lineinfile:
+    dest: "{{ redis_conf }}"
+    regexp: "{{ item.re }}"
+    line: "{{ item.l }}"
+  with_items: "{{ kolide_redis_securecommands }}"
