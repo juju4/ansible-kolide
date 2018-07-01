@@ -87,6 +87,15 @@
         kolide_certificate_key: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
         kolide_certificate_cert: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
   when: kolide_certificate_cert == ''
+
+- name: ensure certificates dir is readable by kolide user
+  acl:
+    path: "{{ ssl_privatedir }}"
+    entity: _kolide
+    etype: user
+    permissions: r-x
+    state: present
+
 - name: ensure certificates is readable by kolide user
   acl:
     path: "{{ item }}"
