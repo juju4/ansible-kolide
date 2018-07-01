@@ -8,6 +8,8 @@ kolide_pkgs:
   - MySQL-python
   - kolide
   - acl
+## kitchen/serverspec/ss
+  - iproute
 
 mysql_svc: mysqld
 #mysql_svc: mariadb

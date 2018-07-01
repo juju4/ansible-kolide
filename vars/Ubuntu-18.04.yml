@@ -3,6 +3,7 @@
 kolide_pkgs:
   - kolide
   - acl
+  - iproute2
 
 mysql_svc: mysql
 
