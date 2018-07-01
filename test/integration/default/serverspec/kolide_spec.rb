@@ -16,7 +16,7 @@ describe service('kolide') do
 end  
 describe process("kolide") do
   its(:user) { should eq "_kolide" }
-  its(:args) { should match /--config \/etc\/kolide\/config.yml/ }
+  its(:args) { should match /--config \/etc\/kolide\/kolide.yml/ }
   its(:count) { should eq 1 }
   it { should be_running }
 end
@@ -25,15 +25,16 @@ describe port(8080) do
 end
 
 describe file('/var/log/syslog'), :if => os[:family] == 'debian' || os[:family] == 'ubuntu' do
-  its(:content) { should match /kolide: Using config file:/ }
-  its(:content) { should match /kolide: {"component":"license-checker","msg":"starting"/ }
-  its(:content) { should match /kolide: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
+  its(:content) { should match /kolide\[[0-9]+\]: Using config file:/ }
+  its(:content) { should match /kolide\[[0-9]+\]: {"component":"license-checker",/ }
+  its(:content) { should match /kolide\[[0-9]+\]: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
+  its(:content) { should_not match /kolide\[[0-9]+\]: .*permission denied.*/ }
   its(:exit_status) { should eq 0 }
 end
 describe file('/var/log/messages'), :if => os[:family] == 'redhat' do
-  its(:content) { should match /kolide\[\d+\]: Using config file:/ }
-  its(:content) { should match /kolide\[\d+\]: {"component":"license-checker",/ }
-  its(:content) { should match /kolide\[\d+\]: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
-  its(:content) { should_not match /kolide\[\d+\]: .*permission denied.*/ }
+  its(:content) { should match /kolide: Using config file:/ }
+  its(:content) { should match /kolide: {"component":"license-checker",/ }
+  its(:content) { should match /kolide: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
+  its(:content) { should_not match /kolide: .*permission denied.*/ }
   its(:exit_status) { should eq 0 }
 end
