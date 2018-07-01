@@ -1,0 +1,24 @@
+---
+
+- name: Download fleet archive
+  get_url:
+    url: https://dl.kolide.co/bin/fleet_latest.zip
+    dest: "/var/tmp/fleet.zip"
+    mode: '0644'
+    checksum: "sha256:6586512c1b2b62c0d202c3ce71f75f4bad264018eb05171a8aeb542f0b1eed0c"
+
+- name: Unarchive fleet
+  unarchive:
+    src: "/var/tmp/fleet.zip"
+    dest: /var/tmp/fleet
+
+- name: Install fleet binaries
+  file:
+    src: "{{ item.s }}"
+    dest: "{{ item.d }}"
+    mode: '0755'
+    owner: root
+  with_items:
+    - { s: /var/tmp/fleet/linux/fleet, d: /usr/bin/fleet }
+    - { s: /var/tmp/fleet/linux/fleetctl, d: /usr/bin/fleetctl }
+

@@ -6,7 +6,6 @@ kolide_pkgs:
 #  - mariadb
 #  - mariadb-server
   - MySQL-python
-  - kolide
   - acl
 ## kitchen/serverspec/ss
   - iproute

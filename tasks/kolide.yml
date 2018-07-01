@@ -1,8 +1,10 @@
 ---
 
-- name: Install kolide packages
+- name: Install kolide dependencies packages
   package: name={{ item }} state=present
   with_items: "{{ kolide_pkgs }}"
+
+- include: fleet.yml
 
 - name: ensure mysqld is enabled and started
   service:
@@ -121,14 +123,11 @@
   register: db
 - block:
     - name: prepare kolide db
-      command: /usr/bin/kolide prepare db --config /etc/kolide/kolide.yml
+      command: /usr/bin/fleet prepare db --config /etc/kolide/kolide.yml
     - name: add db prepare marker
       file: dest=/etc/kolide/.preparedb state=touch
   when: not db.stat.exists
 
-
-- include: kolide-license.yml
-  when: kolide_license_file != ''
 
 ## also have users and org to fill...
 ## INSERT INTO `app_configs` VALUES (1,'OrgName','','https://kolidefqdn:9080',0,'','',587,0,1,0,'','','',1,1,'xxxxxx');

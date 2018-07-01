@@ -1,7 +1,6 @@
 ---
 
 kolide_pkgs:
-  - kolide
   - acl
 
 mysql_svc: mysql
