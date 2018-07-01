@@ -14,11 +14,12 @@
     creates: /var/tmp/linux/fleet
 
 - name: Install fleet binaries
-  file:
+  copy:
     src: "{{ item.s }}"
     dest: "{{ item.d }}"
     mode: '0755'
     owner: root
+    remote_src: true
   with_items:
     - { s: /var/tmp/linux/fleet, d: /usr/bin/fleet }
     - { s: /var/tmp/linux/fleetctl, d: /usr/bin/fleetctl }
