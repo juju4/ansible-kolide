@@ -21,7 +21,8 @@ describe process("kolide") do
   it { should be_running }
 end
 describe port(8080) do
-  it { should be_listening.with('tcp') }
+#  it { should be_listening.with('tcp') }
+  it { should be_listening.with('tcp6') }
 end
 
 describe file('/var/log/syslog'), :if => os[:family] == 'debian' || os[:family] == 'ubuntu' do
