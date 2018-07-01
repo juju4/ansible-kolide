@@ -1,15 +1,16 @@
 ---
 
+# using mysql community repo and not distribution mariadb
 kolide_pkgs:
-#  - mysql-server
-  - mariadb
-  - mariadb-server
+  - mysql-server
+#  - mariadb
+#  - mariadb-server
   - MySQL-python
   - kolide
   - acl
 
-#mysql_svc: mysqld
-mysql_svc: mariadb
+mysql_svc: mysqld
+#mysql_svc: mariadb
 
 ssl_user: root
 ssl_dir: /etc/pki/tls/certs
