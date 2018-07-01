@@ -7,6 +7,7 @@ kolide_pkgs:
 #  - mariadb-server
   - MySQL-python
   - acl
+  - unzip
 ## kitchen/serverspec/ss
   - iproute
 

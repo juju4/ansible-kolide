@@ -2,6 +2,7 @@
 
 kolide_pkgs:
   - acl
+  - unzip
 
 mysql_svc: mysql
 
