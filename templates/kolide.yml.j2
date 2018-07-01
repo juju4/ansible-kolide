@@ -9,6 +9,7 @@ redis:
   address: 127.0.0.1:6379
   password: {{ kolide_redis_password }}
 server:
+  server_address: {{ kolide_ip_listen }}:{{ kolide_port }}
   cert: {{ kolide_certificate_cert }}
   key: {{ kolide_certificate_key }}
   tls: {{ kolide_server_tls | default('true') }}

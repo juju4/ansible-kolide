@@ -5,7 +5,7 @@ kolide_deb: https://dl.kolide.co/deb/kolide_1.0.4_amd64.deb
 kolide_deb_sha256: 6bc71e408af628f9e2213e1f859e33e8c5703886413b45529e9a5b30a43837aa
 
 kolide_ip_listen: 0.0.0.0
-kolide_port: 8000
+kolide_port: 8080
 #kolide_admin_email: 'changethis@example.com'
 
 kolide_uid: 900
