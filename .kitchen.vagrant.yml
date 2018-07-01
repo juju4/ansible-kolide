@@ -26,4 +26,6 @@ suites:
   - name: default
     run_list:
     attributes:
-
+    driver_config:
+      network:
+        - ["forwarded_port", {guest: 8080, host: 9080}]
