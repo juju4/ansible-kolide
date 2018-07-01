@@ -146,7 +146,7 @@
           with_items:
             - kolide
         - include: "immutable.yml target_dir=/lib/systemd/system state=post"
-      when: systemdconf|failed
+      when: systemdconf is failed
     - block:
         - name: enable and start kolide systemd services
           service:
