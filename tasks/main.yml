@@ -7,8 +7,8 @@
   include_vars: "RedHat-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_os_family == "RedHat"
 
-- include: debian.yml
-  when: ansible_os_family == 'Debian'
+#- include: debian.yml
+#  when: ansible_os_family == 'Debian'
 
 - include: redhat.yml
   when: ansible_os_family == "RedHat"
