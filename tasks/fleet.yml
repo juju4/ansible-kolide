@@ -10,7 +10,8 @@
 - name: Unarchive fleet
   unarchive:
     src: "/var/tmp/fleet.zip"
-    dest: /var/tmp/fleet
+    dest: /var/tmp
+    creates: /var/tmp/linux/fleet
 
 - name: Install fleet binaries
   file:
@@ -19,6 +20,6 @@
     mode: '0755'
     owner: root
   with_items:
-    - { s: /var/tmp/fleet/linux/fleet, d: /usr/bin/fleet }
-    - { s: /var/tmp/fleet/linux/fleetctl, d: /usr/bin/fleetctl }
+    - { s: /var/tmp/linux/fleet, d: /usr/bin/fleet }
+    - { s: /var/tmp/linux/fleetctl, d: /usr/bin/fleetctl }
 
