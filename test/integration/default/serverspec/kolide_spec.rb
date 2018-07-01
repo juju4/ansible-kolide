@@ -31,8 +31,9 @@ describe file('/var/log/syslog'), :if => os[:family] == 'debian' || os[:family] 
   its(:exit_status) { should eq 0 }
 end
 describe file('/var/log/messages'), :if => os[:family] == 'redhat' do
-  its(:content) { should match /kolide: Using config file:/ }
-  its(:content) { should match /kolide: {"component":"license-checker","msg":"starting"/ }
-  its(:content) { should match /kolide: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
+  its(:content) { should match /kolide\[\d+\]: Using config file:/ }
+  its(:content) { should match /kolide\[\d+\]: {"component":"license-checker",/ }
+  its(:content) { should match /kolide\[\d+\]: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
+  its(:content) { should_not match /kolide\[\d+\]: .*permission denied.*/ }
   its(:exit_status) { should eq 0 }
 end
