@@ -2,10 +2,10 @@
 
 - name: Download fleet archive
   get_url:
-    url: https://dl.kolide.co/bin/fleet_latest.zip
+    url: "{{ kolide_fleet_url }}"
     dest: "/var/tmp/fleet.zip"
     mode: '0644'
-    checksum: "sha256:6586512c1b2b62c0d202c3ce71f75f4bad264018eb05171a8aeb542f0b1eed0c"
+    checksum: "{{ kolide_fleet_hash }}"
 
 - name: Unarchive fleet
   unarchive:

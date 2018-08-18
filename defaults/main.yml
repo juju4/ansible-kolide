@@ -1,5 +1,8 @@
 ---
 
+kolide_fleet_url: https://dl.kolide.co/bin/fleet_latest.zip
+kolide_fleet_hash: 'sha256:5dfae1a5a6b0a56cb2c3f6767a05c64b9c8f6ca6cd5f241e4c92f822cdcb66b2'
+
 kolide_ip_listen: 0.0.0.0
 kolide_port: 8080
 #kolide_admin_email: 'changethis@example.com'
