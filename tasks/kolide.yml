@@ -123,7 +123,7 @@
   register: db
 - block:
     - name: prepare kolide db
-      command: /usr/bin/fleet prepare db --config /etc/kolide/kolide.yml
+      command: fleet prepare db --config /etc/kolide/kolide.yml
     - name: add db prepare marker
       file: dest=/etc/kolide/.preparedb state=touch
   when: not db.stat.exists

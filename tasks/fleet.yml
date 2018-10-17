@@ -21,5 +21,6 @@
     owner: root
     remote_src: true
   with_items:
-    - { s: /var/tmp/linux/fleet_linux_amd64, d: /usr/bin/fleet }
+    - { s: /var/tmp/linux/fleet, d: /usr/local/bin/fleet }
+    - { s: /var/tmp/linux/fleetctl, d: /usr/local/bin/fleetctl }
 
