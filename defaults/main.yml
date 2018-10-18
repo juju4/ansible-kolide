@@ -9,6 +9,7 @@ kolide_port: 8080
 #kolide_admin_email: 'changethis@example.com'
 
 kolide_uid: 900
+kolide_bin_prefix: /usr/local
 kolide_homedir: /var/_kolide
 kolide_service_enabled: true
 kolide_logdir: /var/log/kolide
