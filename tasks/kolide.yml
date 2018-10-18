@@ -124,6 +124,8 @@
 - block:
     - name: prepare kolide db
       command: fleet prepare db --config /etc/kolide/kolide.yml
+      environment:
+        PATH: /usr/local/bin:/usr/bin:/bin
     - name: add db prepare marker
       file: dest=/etc/kolide/.preparedb state=touch
   when: not db.stat.exists
