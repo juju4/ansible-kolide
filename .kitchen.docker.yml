@@ -36,10 +36,9 @@ platforms:
 #    provisioner:
 #      ansible_version: 2.1.2.0
 ## tool chain kitchen and image need customization... nok currently
-#  - name: alpine-3.4
+#  - name: alpine-3.8
 
 suites:
   - name: default
     run_list:
     attributes:
-

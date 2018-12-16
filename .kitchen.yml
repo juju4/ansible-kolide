@@ -30,10 +30,9 @@ platforms:
 #  - name: centos-6
 ## FIXME! 'Installing Chef Omnibus to install busser to run tests' not supported = can disable
 ##	' sl = self._semlock = _multiprocessing.SemLock(kind, value, maxvalue)\nOSError: [Errno 2] No such file or directory'
-#  - name: alpine-3.4
+#  - name: alpine-3.8
 
 suites:
   - name: default
     run_list:
     attributes:
-

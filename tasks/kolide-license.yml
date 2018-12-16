@@ -1,8 +1,10 @@
 ---
 
-- set_fact:
+- name: Set fact for mysql credentials
+  set_fact:
     mysql_user: "{{ kolide_mysql_user }}"
     mysql_pass: "{{ kolide_mysql_pass }}"
+  no_log: true
 - name: install local mysql configuration for kolide user
   template:
     src: my.cnf.j2

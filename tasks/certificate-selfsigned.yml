@@ -4,12 +4,18 @@
   package:
     name: openssl
     state: present
+  register: pkg_result
+  until: pkg_result is success
 
 - name: apt | self-signed certificate packages dependencies
-  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
-  with_items:
-    - ssl-cert
+  apt:
+    name: ssl-cert
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  register: pkg_result
+  until: pkg_result is success
 
 - name: Generate SSL self-signed certificate
   command: >
@@ -17,8 +23,12 @@
         -subj "{{ kolide_certinfo }}/CN={{ kolide_cn }}"
         -keyout {{ ssl_privatedir }}/{{ ansible_fqdn }}.key
         -out {{ ssl_dir }}/{{ ansible_fqdn }}.crt
-        creates={{ ssl_dir }}/{{ ansible_fqdn }}.crt
+  args:
+    creates: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
 
 - name: check private key has good file permissions
-  file: "path={{ ssl_privatedir }}/{{ ansible_fqdn }}.key owner=root group={{ ssl_user }} mode=0440"
-
+  file:
+    path: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
+    owner: root
+    group: "{{ ssl_user }}"
+    mode: '0440'

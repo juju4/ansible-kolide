@@ -15,4 +15,3 @@
 
 - include: redis-secure.yml
 - include: kolide.yml
-

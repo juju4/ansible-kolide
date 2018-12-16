@@ -4,4 +4,3 @@
   service:
     name: kolide
     state: restarted
-

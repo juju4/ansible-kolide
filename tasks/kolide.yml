@@ -3,6 +3,8 @@
 - name: Install kolide dependencies packages
   package: name={{ item }} state=present
   with_items: "{{ kolide_pkgs }}"
+  register: pkg_result
+  until: pkg_result is success
 
 - include: fleet.yml
 
@@ -19,7 +21,8 @@
       register: tmppass
       changed_when: false
     - debug: var=tmppass.stdout
-    - set_fact:
+    - name: Set fact for temporary mysql credentials
+      set_fact:
         mysql_user: root
         mysql_pass: "{{ tmppass.stdout }}"
     - name: install mysql local configuration for root user
@@ -30,7 +33,9 @@
         backup: yes
 ## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
     - name: change mysqld root password
-      shell: mysql -u root --connect-expired-password -e "alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';"
+      shell: >
+        mysql -u root --connect-expired-password -e "alter user 'root'@'localhost'
+          IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';
       ignore_errors: true
     - name: remove mysql local configuration for root user
       file:
@@ -79,16 +84,19 @@
     - "{{ kolide_logdir }}"
 
 - include: secret.yml
-- set_fact:
+- name: Set fact jwt key
+  set_fact:
     kolide_auth_jwt_key: "{{ rand.stdout }}"
 #    api_secret: "{{ rand.stdout }}"
+  no_log: true
 
 - block:
     - include: certificate-selfsigned.yml
-    - set_fact:
+    - name: Set fact for selfsigned certificate
+      set_fact:
         kolide_certificate_key: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
         kolide_certificate_cert: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
-  when: kolide_certificate_cert == ''
+  when: not kolide_certificate_cert
 
 - name: ensure certificates dir is readable by kolide user
   acl:
@@ -117,7 +125,13 @@
     backup: yes
     #validate: 'ruby -e "require \'yaml\'; YAML.load_file(\'%s\')"'
 
-## FIXME/centos7! FAILED! => {"changed": true, "cmd": ["/usr/bin/kolide", "prepare", "db", "--config", "/etc/kolide/kolide.yml"], "delta": "0:00:00.036057", "end": "2017-01-01 12:12:07.384928", "failed": true, "rc": 1, "start": "2017-01-01 12:12:07.348871", "stderr": "2017/01/01 12:12:07 FAIL 20161118212436_CreateTableDistributedQueryCampaigns.go (Error 1293: Incorrect table definition; there can be only one TIMESTAMP column with CURRENT_TIMESTAMP in DEFAULT or ON UPDATE clause), quitting migration.", "stdout": "Using config file:  /etc/kolide/kolide.yml", "stdout_lines": ["Using config file:  /etc/kolide/kolide.yml"], "warnings": []}
+## FIXME/centos7! FAILED! => {"changed": true, "cmd": ["/usr/bin/kolide", "prepare", "db", "--config",
+##    "/etc/kolide/kolide.yml"], "delta": "0:00:00.036057", "end": "2017-01-01 12:12:07.384928", "failed": true,
+##    "rc": 1, "start": "2017-01-01 12:12:07.348871", "stderr": "2017/01/01 12:12:07 FAIL
+##    20161118212436_CreateTableDistributedQueryCampaigns.go (Error 1293: Incorrect table definition; there can
+##    be only one TIMESTAMP column with CURRENT_TIMESTAMP in DEFAULT or ON UPDATE clause), quitting migration.",
+##    "stdout": "Using config file:  /etc/kolide/kolide.yml", "stdout_lines": ["Using config file:
+##    /etc/kolide/kolide.yml"], "warnings": []}
 - name: check db prepare marker
   stat: path=/etc/kolide/.preparedb
   register: db
@@ -133,7 +147,8 @@
 
 ## also have users and org to fill...
 ## INSERT INTO `app_configs` VALUES (1,'OrgName','','https://kolidefqdn:9080',0,'','',587,0,1,0,'','','',1,1,'xxxxxx');
-## INSERT INTO `users` VALUES (1,'2017-01-01 12:12:14','2017-01-01 12:12:14',NULL,0,'<username>','xxxxx','xxxxxx','','<useremail>',1,1,0,'','');
+## INSERT INTO `users` VALUES (1,'2017-01-01 12:12:14','2017-01-01 12:12:14',NULL,0,'<username>','xxxxx','xxxxxx','',
+##  '<useremail>',1,1,0,'','');
 
 - block:
     - name: install kolide systemd configuration
@@ -179,4 +194,3 @@
             - kolide
       when: not kolide_service_enabled
   when: ansible_service_mgr == 'systemd'
-

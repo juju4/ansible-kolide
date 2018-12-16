@@ -23,4 +23,3 @@
   with_items:
     - { s: /var/tmp/linux/fleet, d: "{{ kolide_bin_prefix }}/bin/fleet" }
     - { s: /var/tmp/linux/fleetctl, d: "{{ kolide_bin_prefix }}/bin/fleetctl" }
-
