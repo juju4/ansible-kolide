@@ -35,7 +35,7 @@
     - name: change mysqld root password
       shell: >
         mysql -u root --connect-expired-password -e "alter user 'root'@'localhost'
-          IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';
+          IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';"
       ignore_errors: true
     - name: remove mysql local configuration for root user
       file:
