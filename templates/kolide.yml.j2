@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 mysql:
-  address: 127.0.0.1:3306
+  address: {{ kolide_mysql_host }}:3306
   database: {{ kolide_mysql_db }}
   username: {{ kolide_mysql_user }}
   password: {{ kolide_mysql_pass }}

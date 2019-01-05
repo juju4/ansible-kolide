@@ -2,8 +2,12 @@
 [Unit]
 Description=kolide server
 Requires=redis.service
+{% if kolide_mysql_host == 'localhost' %}
 Wants=mysqld.service
 After=redis.service mysqld.service
+{% else %}
+After=redis.service
+{% endif %}
  
 [Service]
 ## no daemon mode

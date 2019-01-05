@@ -13,6 +13,7 @@
     name: "{{ mysql_svc | default('mysqld') }}"
     state: started
     enabled: yes
+  delegate_to: "{{ kolide_mysql_host }}"
 
 - block:
 ## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
@@ -20,6 +21,7 @@
       command: "awk '/temporary password/ { print $NF }' /var/log/mysqld.log"
       register: tmppass
       changed_when: false
+      delegate_to: "{{ kolide_mysql_host }}"
     - debug: var=tmppass.stdout
     - name: Set fact for temporary mysql credentials
       set_fact:
@@ -31,16 +33,19 @@
         dest: /root/.my.cnf
         mode: '0600'
         backup: yes
+      delegate_to: "{{ kolide_mysql_host }}"
 ## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
     - name: change mysqld root password
       shell: >
         mysql -u root --connect-expired-password -e "alter user 'root'@'localhost'
           IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';"
       ignore_errors: true
+      delegate_to: "{{ kolide_mysql_host }}"
     - name: remove mysql local configuration for root user
       file:
         dest: /root/.my.cnf
         state: absent
+      delegate_to: "{{ kolide_mysql_host }}"
   when: ansible_os_family == 'RedHat'
 
 - name: Create kolide mysql database
@@ -49,6 +54,7 @@
     state: present
     login_user: root
     login_password: "{{ kolide_mysql_root_pass }}"
+  delegate_to: "{{ kolide_mysql_host }}"
 
 - name: Create kolide mysql user
   mysql_user:
@@ -58,6 +64,7 @@
     state: present
     login_user: root
     login_password: "{{ kolide_mysql_root_pass }}"
+  delegate_to: "{{ kolide_mysql_host }}"
 
 - name: add kolide unix group
   group:

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Redis hardening (password, rename-command)
+- Allow remote mysql server
 
 ### Changed
 - Heavy lint following galaxy new rules following adoption of ansible-lint
