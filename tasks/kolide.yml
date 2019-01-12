@@ -14,6 +14,7 @@
     state: started
     enabled: yes
   delegate_to: "{{ kolide_mysql_host }}"
+  when: kolide_mysql_enable
 
 - block:
 ## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
@@ -46,7 +47,9 @@
         dest: /root/.my.cnf
         state: absent
       delegate_to: "{{ kolide_mysql_host }}"
-  when: ansible_os_family == 'RedHat'
+  when: >
+    ansible_os_family == 'RedHat' and
+    kolide_mysql_enable
 
 - name: Create kolide mysql database
   mysql_db:
@@ -55,6 +58,7 @@
     login_user: root
     login_password: "{{ kolide_mysql_root_pass }}"
   delegate_to: "{{ kolide_mysql_host }}"
+  when: kolide_mysql_enable
 
 - name: Create kolide mysql user
   mysql_user:
@@ -65,6 +69,7 @@
     login_user: root
     login_password: "{{ kolide_mysql_root_pass }}"
   delegate_to: "{{ kolide_mysql_host }}"
+  when: kolide_mysql_enable
 
 - name: add kolide unix group
   group:
@@ -149,7 +154,9 @@
         PATH: /usr/local/bin:/usr/bin:/bin
     - name: add db prepare marker
       file: dest=/etc/kolide/.preparedb state=touch
-  when: not db.stat.exists
+  when:
+    not db.stat.exists and
+    kolide_mysql_enable
 
 
 ## also have users and org to fill...

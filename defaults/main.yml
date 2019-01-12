@@ -14,6 +14,8 @@ kolide_homedir: /var/_kolide
 kolide_service_enabled: true
 kolide_logdir: /var/log/kolide
 
+# if mysql handled separately (like cloud instance)
+kolide_mysql_enable: true
 # hostname should be valid fqdn and ansible hostname
 kolide_mysql_host: localhost
 kolide_mysql_user: kolide

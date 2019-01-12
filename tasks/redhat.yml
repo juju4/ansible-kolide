@@ -6,3 +6,4 @@
     state: present
   register: pkg_result
   until: pkg_result is success
+  when: kolide_mysql_enable

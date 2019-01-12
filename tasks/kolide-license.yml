@@ -5,11 +5,13 @@
     mysql_user: "{{ kolide_mysql_user }}"
     mysql_pass: "{{ kolide_mysql_pass }}"
   no_log: true
+  when: kolide_mysql_enable
 - name: install local mysql configuration for kolide user
   template:
     src: my.cnf.j2
     dest: "{{ kolide_homedir }}/.my.cnf"
     owner: _kolide
+  when: kolide_mysql_enable
 
 - name: check if license is configured
   command: mysql kolidedb -e "SELECT licenses.token FROM licenses WHERE id=1;" -sN
@@ -17,6 +19,7 @@
   become: yes
   become_user: _kolide
   register: currentlicense
+  when: kolide_mysql_enable
 #- debug: var=currentlicense
 
 - block:
@@ -33,7 +36,9 @@
       become_user: _kolide
       notify:
         - reload kolide
-  when: currentlicense is defined and currentlicense.stdout is defined and currentlicense.stdout == 'NULL'
+  when: >
+    currentlicense is defined and currentlicense.stdout is defined and currentlicense.stdout == 'NULL' and
+    kolide_mysql_enable
 
 - name: check if license is configured
   command: mysql kolidedb -e "SELECT * FROM licenses WHERE id=1;" -sN
@@ -41,4 +46,5 @@
   become: yes
   become_user: _kolide
   register: currentlicense
+  when: kolide_mysql_enable
 #- debug: var=currentlicense
