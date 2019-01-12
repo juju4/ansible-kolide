@@ -41,7 +41,7 @@
 - name: Open firewall to access MySQL Server from allowed source IPs
   azure_rm_sqlfirewallrule:
     resource_group: "{{ kolide_mysqlazure_rg }}"
-    resource_name: "{{ kolide_mysqlazure_name }}"
+    server_name: "{{ kolide_mysqlazure_name }}"
     name: "firewallrule-allow-src-{{ item }}"
     start_ip_address: "{{ item }}"
     end_ip_address: "{{ item }}"
