@@ -20,7 +20,7 @@
     password: "{{ kolide_mysql_pass }}"
     priv: "{{ kolide_mysql_db }}.*:ALL"
     state: present
-    host: "{{ kolide_mysql_host }}"
+    login_host: "{{ kolide_mysql_host }}"
     login_user: root
     login_password: "{{ kolide_mysql_root_pass }}"
   when: kolide_mysql_enable or kolide_mysqlazure_enable

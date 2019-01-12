@@ -51,6 +51,6 @@
   mysql_db:
     name: "{{ kolide_mysql_db }}"
     state: present
-    host: "{{ kolide_mysql_host }}"
+    login_host: "{{ kolide_mysql_host }}"
     login_user: root
     login_password: "{{ kolide_mysql_root_pass }}"
