@@ -12,6 +12,7 @@
     src: "/var/tmp/fleet.zip"
     dest: /var/tmp
     creates: /var/tmp/linux/fleet
+    remote_src: yes
 
 - name: Install fleet binaries
   copy:
