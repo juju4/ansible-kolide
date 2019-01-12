@@ -23,6 +23,9 @@ kolide_mysql_user: kolide
 kolide_mysql_pass: "Kolide!2017@"
 kolide_mysql_db: kolidedb
 kolide_mysql_root_pass: "{{ mysql_root_password | default('Toor=2017.') }}"
+kolide_mysqlazure_enable: false
+kolide_mysqlazure_rg: kolide0
+kolide_mysqlazure_name: kolide0mysqlserver
 
 kolide_cn: kolide
 kolide_certificate_key: ''

@@ -1,0 +1,33 @@
+---
+
+- name: Create Azure MySQL Server
+  azure_rm_mysqlserver:
+    resource_group: "{{ kolide_mysqlazure_rg }}"
+    name: "{{ kolide_mysqlazure_name }}"
+    sku:
+      name: B_Gen5_1
+      tier: Basic
+    version: 5.7
+    enforce_ssl: True
+    admin_username: "root"
+    admin_password: "{{ kolide_mysql_root_pass }}"
+    storage_mb: 51200
+
+- name: Create instance of Azure MySQL Database
+  azure_rm_mysqldatabase:
+    resource_group: "{{ kolide_mysqlazure_rg }}"
+    server_name: "{{ kolide_mysqlazure_name }}"
+    name: "{{ kolide_mysql_db }}"
+
+- name: Query Azure MySQL Servers in current resource group
+  azure_rm_mysqlserver_facts:
+    resource_group: "{{ kolide_mysqlazure_rg }}"
+  register: mysqlserverfacts
+
+- name: Dump Azure MySQL Server facts
+  debug:
+    var: mysqlserverfacts
+
+- name: Set fact kolide_mysql_host
+  set_fact:
+    kolide_mysql_host: "{{ mysqlserverfacts['servers']['fully_qualified_domain_name'] }}"

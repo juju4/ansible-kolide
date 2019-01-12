@@ -2,14 +2,16 @@
 
 # using mysql community repo and not distribution mariadb
 kolide_pkgs:
-  - mysql-server
-#  - mariadb
-#  - mariadb-server
   - MySQL-python
   - acl
   - unzip
 ## kitchen/serverspec/ss
   - iproute
+
+kolide_mysqlserver_pkgs:
+  - mysql-server
+#  - mariadb
+#  - mariadb-server
 
 mysql_svc: mysqld
 #mysql_svc: mariadb
