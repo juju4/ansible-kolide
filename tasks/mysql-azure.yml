@@ -38,7 +38,26 @@
   set_fact:
     kolide_mysql_host: "{{ mysqlserverfacts['servers'][0]['fully_qualified_domain_name'] }}"
 
-#- name: Open firewall to access MySQL Server from allowed source IPs
+- name: Open firewall to access MySQL Server from allowed source IPs - <2.8
+  azure_rm_resource:
+    api_version: '2017-12-01'
+    resource_group: "{{ kolide_mysqlazure_rg }}"
+    resource_name: "{{ kolide_mysqlazure_name }}"
+    provider: dbformysql
+    resource_type: servers
+    subresource:
+      - type: firewallrules
+        name: externalaccess
+    body:
+      properties:
+        startIpAddress: "{{ item }}"
+        endIpAddress: "{{ item }}"
+  with_items: "{{ kolide_mysqlazure_allowed_srcip }}"
+  delegate_to: localhost
+  become: no
+  when: "ansible_version.full is version_compare('2.8', '<')"
+
+#- name: Open firewall to access MySQL Server from allowed source IPs - >=2.8
 #  azure_rm_mysqlfirewallrule:
 #    resource_group: "{{ kolide_mysqlazure_rg }}"
 #    server_name: "{{ kolide_mysqlazure_name }}"
