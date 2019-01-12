@@ -21,7 +21,7 @@
     priv: "{{ kolide_mysql_db }}.*:ALL"
     state: present
     login_host: "{{ kolide_mysql_host }}"
-    login_user: root
+    login_user: "{{ kolide_mysql_root_user | default('mysqlroot_kolide') }}"
     login_password: "{{ kolide_mysql_root_pass }}"
   when: kolide_mysql_enable or kolide_mysqlazure_enable
 

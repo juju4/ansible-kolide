@@ -9,20 +9,26 @@
       tier: Basic
     version: 5.7
     enforce_ssl: True
-    admin_username: "root"
+    admin_username: "{{ kolide_mysql_root_user | default('mysqlroot_kolide') }}"
     admin_password: "{{ kolide_mysql_root_pass }}"
     storage_mb: 51200
+  delegate_to: localhost
+  become: no
 
 - name: Create instance of Azure MySQL Database
   azure_rm_mysqldatabase:
     resource_group: "{{ kolide_mysqlazure_rg }}"
     server_name: "{{ kolide_mysqlazure_name }}"
     name: "{{ kolide_mysql_db }}"
+  delegate_to: localhost
+  become: no
 
 - name: Query Azure MySQL Servers in current resource group
   azure_rm_mysqlserver_facts:
     resource_group: "{{ kolide_mysqlazure_rg }}"
   register: mysqlserverfacts
+  delegate_to: localhost
+  become: no
 
 - name: Dump Azure MySQL Server facts
   debug:
