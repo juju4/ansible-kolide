@@ -36,7 +36,7 @@
 
 - name: Set fact kolide_mysql_host
   set_fact:
-    kolide_mysql_host: "{{ mysqlserverfacts['servers']['fully_qualified_domain_name'] }}"
+    kolide_mysql_host: "{{ mysqlserverfacts['servers'][0]['fully_qualified_domain_name'] }}"
 
 - name: Open firewall to access MySQL Server from allowed source IPs
   azure_rm_sqlfirewallrule:
