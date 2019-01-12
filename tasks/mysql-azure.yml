@@ -46,3 +46,5 @@
     start_ip_address: "{{ item }}"
     end_ip_address: "{{ item }}"
   with_items: "{{ kolide_mysqlazure_allowed_srcip }}"
+  delegate_to: localhost
+  become: no
