@@ -23,7 +23,9 @@
     login_host: "{{ kolide_mysql_host }}"
     login_user: "{{ kolide_mysql_root_user | default('mysqlroot_kolide') }}"
     login_password: "{{ kolide_mysql_root_pass }}"
-  when: kolide_mysql_enable or kolide_mysqlazure_enable
+  when: >
+    kolide_mysql_configure and
+    (kolide_mysql_enable or kolide_mysqlazure_enable)
 
 - name: add kolide unix group
   group:
@@ -110,6 +112,7 @@
       file: dest=/etc/kolide/.preparedb state=touch
   when:
     not db.stat.exists and
+    kolide_mysql_configure and
     (kolide_mysql_enable or kolide_mysqlazure_enable)
 
 ## also have users and org to fill...
