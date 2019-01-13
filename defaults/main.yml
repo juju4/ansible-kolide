@@ -8,7 +8,7 @@ kolide_ip_listen: 0.0.0.0
 kolide_port: 8080
 #kolide_admin_email: 'changethis@example.com'
 
-kolide_uid: 900
+kolide_uid: 902
 kolide_bin_prefix: /usr/local
 kolide_homedir: /var/_kolide
 kolide_service_enabled: true

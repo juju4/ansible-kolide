@@ -1,0 +1,31 @@
+---
+
+- hosts: all
+  vars:
+    - kolide_mysql_enable: false
+    - kolide_mysqlazure_enable: true
+# FIXME! mysql configure requires azure mysql firewall to be open for orchestractor
+# action requires unreleased ansible 2.8
+    - kolide_mysql_configure: false
+#    - kolide_mysqlazure_allowed_srcip: [ '<orchestratorip>' ]
+    - kolide_mysql_root_user: 'mysqlroot_kolide'
+    - mysql_root_password: 'Toor=2017.'
+    - kolide_mysql_root_pass: "{{ mysql_root_password }}"
+    - mysql_databases:
+        - name: "{{ kolide_mysql_db }}"
+    - mysql_users:
+        - name: "{{ kolide_mysql_user }}"
+          host: "localhost"
+          #host: "%"
+          password: "{{ kolide_mysql_pass }}"
+          priv: "{{ kolide_mysql_db }}.*:ALL"
+    - mysql_enablerepo: epel
+  roles:
+    - juju4.harden
+    - juju4.ntpclient
+    - juju4.osquery
+#    - juju4.falco
+#    - juju4.syslogclient
+#    - juju4.harden_mailserver
+#    - juju4.smarthostclient
+    - juju4.kolide
