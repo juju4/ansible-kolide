@@ -38,6 +38,9 @@
   set_fact:
     kolide_mysql_host: "{{ mysqlserverfacts['servers'][0]['fully_qualified_domain_name'] }}"
 
+# FIXME! executes without error but
+#       warning 'Azure API profile latest does not define an entry for MySQLManagementClient'
+#       firewall access not effective in later configuration
 - name: Open firewall to access MySQL Server from allowed source IPs - <2.8
   azure_rm_resource:
     api_version: '2017-12-01'
