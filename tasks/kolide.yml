@@ -113,7 +113,8 @@
   when:
     not db.stat.exists and
     kolide_mysql_configure and
-    (kolide_mysql_enable or kolide_mysqlazure_enable)
+    (kolide_mysql_enable or kolide_mysqlazure_enable) and
+    not kolide_mysql_backup_restore
 
 ## also have users and org to fill...
 ## INSERT INTO `app_configs` VALUES (1,'OrgName','','https://kolidefqdn:9080',0,'','',587,0,1,0,'','','',1,1,'xxxxxx');

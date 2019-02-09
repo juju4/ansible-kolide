@@ -54,3 +54,36 @@
     login_host: "{{ kolide_mysql_host }}"
     login_user: root
     login_password: "{{ kolide_mysql_root_pass }}"
+  when: not kolide_mysql_backup_restore
+
+- block:
+    - name: Get database restore file hash
+      stat:
+        path: "{{ kolide_mysql_restorefile }}"
+        checksum_algorithm: sha256
+      register: restorefile
+      delegate_to: localhost
+      become: no
+
+    - name: Check if restore file has already been restored
+      stat:
+        path: "/root/.kolide_mysql_restore-{{ restorefile.stat.checksum }}"
+      register: restored
+      when: restorefile.stat.exists
+
+    - name: Create kolide mysql database from backup
+      mysql_db:
+        name: "{{ kolide_mysql_db }}"
+        login_host: "{{ kolide_mysql_host }}"
+        login_user: root
+        login_password: "{{ kolide_mysql_root_pass }}"
+        state: import
+        target: "{{ kolide_mysql_restorefile }}"
+      when: restorefile.stat.exists and not restored.stat.exists
+
+    - name: add restoration marker
+      file:
+        dest: "/root/.kolide_mysql_restore-{{ restorefile.stat.checksum }}"
+        state: touch
+      when: restorefile.stat.exists and not restored.stat.exists
+  when: kolide_mysql_backup_restore
