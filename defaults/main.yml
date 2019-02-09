@@ -15,6 +15,8 @@ kolide_service_enabled: true
 kolide_logdir: /var/log/kolide
 
 kolide_mysql_configure: true
+kolide_mysql_backup_restore: false
+kolide_mysql_restorefile: path/to/kolide.sql
 # if mysql handled separately (like cloud instance)
 kolide_mysql_enable: true
 # hostname should be valid fqdn and ansible hostname
@@ -40,14 +42,3 @@ kolide_certificate_cert_fullchain: "{{ kolide_homedir }}/kolide/conf/start/docke
 kolide_certificate_root_ca: ''
 kolide_certinfo: '/C=US/ST=CA/L=San Francisco/O=Ansible kolide'
 kolide_certduration: 365
-
-kolide_license_file: ''
-#kolide_license_file: license.txt
-
-kolide_redis_password: redis_password_to_change
-kolide_redis_securecommands:
-    - { re: '^rename-command FLUSHDB .*', l: 'rename-command FLUSHDB ""' }
-    - { re: '^rename-command FLUSHALL .*', l: 'rename-command FLUSHALL ""' }
-    - { re: '^rename-command DEBUG .*', l: 'rename-command DEBUG ""' }
-    - { re: '^rename-command SHUTDOWN .*', l: 'rename-command SHUTDOWN SHUTDOWN_FLEET1234' }
-    - { re: '^rename-command CONFIG .*', l: 'rename-command CONFIG CONFIG_FLEET1234' }
