@@ -7,7 +7,7 @@ mysql:
   password: {{ kolide_mysql_pass }}
 redis:
   address: 127.0.0.1:6379
-  password: {{ kolide_redis_password }}
+  password: {{ redis_requirepass }}
 server:
   server_address: {{ kolide_ip_listen }}:{{ kolide_port }}
   cert: {{ kolide_certificate_cert }}
