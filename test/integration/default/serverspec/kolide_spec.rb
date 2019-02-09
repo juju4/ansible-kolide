@@ -35,3 +35,14 @@ describe file('/var/log/messages'), :if => os[:family] == 'redhat' do
   its(:content) { should match /kolide: {"address":"0.0.0.0:8080","msg":"listening","transport":/ }
   its(:content) { should_not match /kolide: .*permission denied.*/ }
 end
+
+describe command('curl -vk https://localhost:8080/healthz') do
+  its(:stdout) { should match /^$/ }
+  its(:stderr) { should match /HTTP\/1.1 200 OK/ }
+  its(:exit_status) { should eq 0 }
+end
+describe command('curl -vk -X POST https://localhost:8080/api/v1/osquery/enroll') do
+  its(:stdout) { should match /Unknown Error/ }
+  its(:stderr) { should match /HTTP\/1.1 500 / }
+  its(:exit_status) { should_not eq 0 }
+end
