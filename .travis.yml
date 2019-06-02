@@ -60,8 +60,8 @@ before_install:
   - sudo lxc profile device add default root disk path=/ pool=pool1
   - sudo lxc profile show default
 
-  - sudo pip install ansible
-  - gem install kitchen
+  - sudo pip install ansible ansible-lint
+  - gem install test-kitchen --version "=1.25.0"
   - gem install kitchen-ansible
   - gem install kitchen-sync
   - gem install kitchen-lxd_cli
@@ -80,6 +80,7 @@ before_install:
 #  - sudo -E -u $USER kitchen diagnose --all
 
 script:
+  - ansible-lint tasks/main.yml || true
 #  - KITCHEN_LOCAL_YAML=.kitchen.local.yml bundle exec kitchen verify ${INSTANCE}
   - sudo -E su $USER -c "env PATH=$PATH kitchen verify default-${distribution}-${version//./} -l debug || (cat $HOME/.kitchen/logs/default-${distribution}-${version//./}.log; find /tmp/kitchen)"
 
