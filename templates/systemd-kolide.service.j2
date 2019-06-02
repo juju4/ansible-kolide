@@ -25,6 +25,11 @@ RestartSec=15s
 Restart=on-failure
 SyslogIdentifier=kolide
 PrivateTmp=true
+NoNewPrivileges=yes
+ProtectHome=read-only
+ProtectKernelTunables=true
+ProtectSystem=full
+RestrictRealtime=true
  
 [Install]
 WantedBy=multi-user.target
