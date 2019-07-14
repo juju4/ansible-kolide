@@ -1,7 +1,6 @@
 ---
 
 - hosts: all
-#- hosts: test-kitchen
   vars:
     - mysql_root_password: 'Toor=2017.'
     - kolide_mysql_root_pass: "{{ mysql_root_password }}"
