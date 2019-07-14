@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Redis hardening (password, rename-command)
+- Redis hardening (password, rename-command) and removed as included in geerlingguy.redis
 - Allow remote mysql server
+- Systemd service hardening
+- Packer configuration
+- Partial Azure mysql testing
+- Gitignore
 
 ### Changed
 - Heavy lint following galaxy new rules following adoption of ansible-lint
@@ -17,6 +21,11 @@ https://docs.ansible.com/ansible-lint/rules/default_rules.html
 https://github.com/ansible/ansible-lint
 - Galaxy dependency naming evolution (juju4.redhat_epel)
 - update upstream binary url to github releases
+- Travis: force test-kitchen 0.1.25 to keep compatibility with kitchen-lxd_cli
+- Travis: dist from trusty to xenial + lxd3
+https://blog.travis-ci.com/2018-11-08-xenial-release
+- Github: rename tags to match semantic versioning: 0.8.0
+- Update default fleet to 2.0.2
 
 ### Removed
 - Remove license-checker
