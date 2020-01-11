@@ -210,5 +210,5 @@
       shell: "nohup {{ kolide_bin_prefix }}/bin/fleet serve --config /etc/kolide/kolide.yml &"
       become: yes
       become_user: "_kolide"
-      when: run.stdout == ''
+      when: not run.stdout|string
   when: (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
