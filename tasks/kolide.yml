@@ -22,7 +22,7 @@
     state: present
     login_host: "{{ kolide_mysql_host }}"
     login_user: "{{ kolide_mysql_root_user | default('mysqlroot_kolide') }}"
-    login_password: "{{ kolide_mysql_root_pass }}"
+    login_password: "{{ kolide_mysql_root_pass | default(omit) }}"
   when: >
     kolide_mysql_configure and
     (kolide_mysql_enable or kolide_mysqlazure_enable)
@@ -122,6 +122,38 @@
 ##  '<useremail>',1,1,0,'','');
 
 - block:
+    - name: Check osquery_enroll_secret
+      command: >
+         mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
+            -NBe 'select osquery_enroll_secret from app_configs where id=1;' \
+            {{ kolide_mysql_db }}
+      register: enrollcheck
+      changed_when: false
+      ignore_errors: true
+    - name: Set osquery_enroll_secret
+      command: >
+         mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
+            -NBe 'update app_configs set osquery_enroll_secret = "{{ kolide_enrollment_secret }}" where id=1;' \
+            {{ kolide_mysql_db }}
+      when: enrollcheck.rc !=0 or enrollcheck.stdout != kolide_enrollment_secret
+  when: kolide_enrollment_secret is defined and kolide_enrollment_secret|string
+
+- block:
+    - name: Get snapshot events fleet config
+      command: >
+        mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
+            -NBe 'select value from options where name="logger_snapshot_event_type" and type=2;;' \
+            {{ kolide_mysql_db }}
+      register: snapcfg
+    - name: Set snapshot events to be split into multiple events
+      command: >
+        mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
+            -NBe 'insert into options (name, type, value) values ("logger_snapshot_event_type", 2, "true") ON DUPLICATE KEY UPDATE type=2, value="true";' \
+            {{ kolide_mysql_db }}
+      when: snapcfg.rc != 0 and snapcfg.stdout != "true"
+  when: kolide_snapshot_split_enable is defined and kolide_snapshot_split_enable|string
+
+- block:
     - name: install kolide systemd configuration
       template:
         src: "systemd-{{ item }}.service.j2"
@@ -164,4 +196,19 @@
           with_items:
             - kolide
       when: not kolide_service_enabled
-  when: ansible_service_mgr == 'systemd'
+  when: >
+    ansible_service_mgr == 'systemd' and
+    not (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
+
+- block:
+    - name: Docker | check if fleet running
+      command: pgrep fleet
+      register: run
+      changed_when: false
+      ignore_errors: true
+    - name: Docker | start fleet manually
+      shell: "nohup {{ kolide_bin_prefix }}/bin/fleet serve --config /etc/kolide/kolide.yml &"
+      become: yes
+      become_user: "_kolide"
+      when: run.stdout == ''
+  when: (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")

@@ -13,8 +13,8 @@
           password: "{{ kolide_mysql_pass }}"
           priv: "{{ kolide_mysql_db }}.*:ALL"
     - mysql_enablerepo: epel
-    - redis_requirepass: "redis_password_to_change"
-    - redis_disabled_commands:
+    - kolide_redis_requirepass: "redis_password_to_change"
+    - kolide_redis_disabled_commands:
         - FLUSHDB
         - FLUSHALL
         - KEYS

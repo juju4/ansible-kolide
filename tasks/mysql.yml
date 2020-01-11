@@ -14,6 +14,20 @@
     state: started
     enabled: yes
   delegate_to: "{{ kolide_mysql_host }}"
+  when: >
+    not (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
+
+- block:
+    - name: Docker | Manually start mysql service
+      shell: >
+        /usr/bin/mysqld_safe --datadir='/var/lib/mysql' > /tmp/mysqld_safe.out 2>&1 &
+      args:
+        creates: /tmp/mysqld_safe.out
+        chdir: /var/lib/mysql
+      ignore_errors: true
+      delegate_to: "{{ kolide_mysql_host }}"
+  when: >
+    (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
 
 - block:
 ## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
@@ -55,8 +69,8 @@
     state: present
     login_host: "{{ kolide_mysql_host }}"
     login_user: root
-    login_password: "{{ kolide_mysql_root_pass }}"
-  delegate_to: "{{ kolide_mysql_host }}"
+    login_password: "{{ kolide_mysql_root_pass | default(omit) }}"
+#  delegate_to: "{{ kolide_mysql_host }}"
   when: not kolide_mysql_backup_restore
 
 - block:
@@ -79,7 +93,7 @@
         name: "{{ kolide_mysql_db }}"
         login_host: "{{ kolide_mysql_host }}"
         login_user: root
-        login_password: "{{ kolide_mysql_root_pass }}"
+        login_password: "{{ kolide_mysql_root_pass | default(omit) }}"
         state: import
         target: "{{ kolide_mysql_restorefile }}"
       when: restorefile.stat.exists and not restored.stat.exists

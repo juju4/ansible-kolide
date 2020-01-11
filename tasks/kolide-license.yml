@@ -27,7 +27,8 @@
       command: "cat {{ kolide_certificate_cert }}"
       changed_when: false
       register: crt
-    - set_fact:
+    - name: Set facts for license and certificate
+      set_fact:
         license: "{{ lookup('file', kolide_license_file) }}"
         certificate: "{{ crt.stdout }}"
     - name: insert license into mysql database

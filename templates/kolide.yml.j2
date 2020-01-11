@@ -1,5 +1,6 @@
 {{ ansible_managed | comment }}
 
+# https://github.com/kolide/fleet/blob/master/docs/infrastructure/configuring-the-fleet-binary.md
 mysql:
   address: {{ kolide_mysql_host }}:3306
   database: {{ kolide_mysql_db }}
@@ -7,7 +8,9 @@ mysql:
   password: {{ kolide_mysql_pass }}
 redis:
   address: 127.0.0.1:6379
-  password: {{ redis_requirepass }}
+{% if kolide_redis_requirepass is defined and kolide_redis_requirepass %}
+  password: {{ kolide_redis_requirepass }}
+{% endif %}
 server:
   server_address: {{ kolide_ip_listen }}:{{ kolide_port }}
   cert: {{ kolide_certificate_cert }}
@@ -19,7 +22,7 @@ logging:
   json: true
   debug: false
   disable_banner: false
-osquery:
+filesystem:
   result_log_file: {{ kolide_logdir }}/osquery_result
   status_log_file: {{ kolide_logdir }}/osquery_status
   enable_log_rotation: true

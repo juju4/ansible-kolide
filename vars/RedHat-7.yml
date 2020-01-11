@@ -5,6 +5,7 @@ kolide_pkgs:
   - MySQL-python
   - acl
   - unzip
+  - MySQL-python
 ## kitchen/serverspec/ss
   - iproute
 
