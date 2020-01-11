@@ -1,0 +1,35 @@
+---
+
+- hosts: all
+  vars:
+    - mysql_root_password: 'Toor=2017.'
+    - kolide_mysql_root_pass: "{{ mysql_root_password }}"
+    - mysql_databases:
+        - name: "{{ kolide_mysql_db }}"
+    - mysql_users:
+        - name: "{{ kolide_mysql_user }}"
+          host: "localhost"
+          #host: "%"
+          password: "{{ kolide_mysql_pass }}"
+          priv: "{{ kolide_mysql_db }}.*:ALL"
+    - mysql_enablerepo: epel
+    - kolide_port: 8888
+    - kolide_redis_requirepass: "redis_password_to_change"
+    - kolide_redis_disabled_commands:
+        - FLUSHDB
+        - FLUSHALL
+        - KEYS
+        - PEXPIRE
+        - DEL
+        - CONFIG
+        - SHUTDOWN
+        - BGREWRITEAOF
+        - BGSAVE
+        - SAVE
+        - SPOP
+        - SREM
+        - RENAME
+        - DEBUG
+  roles:
+    - { role: geerlingguy.mysql, when: ansible_os_family == 'Debian' }
+    - juju4.kolide

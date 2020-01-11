@@ -37,3 +37,6 @@ suites:
   - name: default
     run_list:
     attributes:
+  - name: default-8888
+    run_list:
+    attributes:
