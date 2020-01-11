@@ -32,7 +32,7 @@
 - block:
 ## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
     - name: recover mysqld temporary password
-      command: "awk '/temporary password/ { print $NF }' /var/log/mysqld.log"
+      command: "awk '/temporary password/ { print $NF }' {{ mysql_log }}"
       register: tmppass
       changed_when: false
       delegate_to: "{{ kolide_mysql_host }}"

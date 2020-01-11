@@ -17,6 +17,8 @@ kolide_mysqlserver_pkgs:
 mysql_svc: mysqld
 #mysql_svc: mariadb
 
+mysql_log: /var/log/mysqld.log
+
 ssl_user: root
 ssl_dir: /etc/pki/tls/certs
 ssl_privatedir: /etc/pki/tls/private
