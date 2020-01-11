@@ -1,0 +1,24 @@
+---
+
+# using mysql community repo and not distribution mariadb
+kolide_pkgs:
+  - python3-PyMySQL
+  - acl
+  - unzip
+## kitchen/serverspec/ss
+  - iproute
+
+kolide_mysqlserver_pkgs:
+  - mysql-server
+#  - mariadb
+#  - mariadb-server
+
+mysql_svc: mysqld
+#mysql_svc: mariadb
+
+ssl_user: root
+ssl_dir: /etc/pki/tls/certs
+ssl_privatedir: /etc/pki/tls/private
+
+redis_svc: redis
+redis_conf: /etc/redis.conf
