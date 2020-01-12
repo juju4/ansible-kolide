@@ -92,6 +92,8 @@
     mode: '0644'
     backup: yes
     #validate: 'ruby -e "require \'yaml\'; YAML.load_file(\'%s\')"'
+  notify:
+    - reload kolide
 
 ## FIXME/centos7! FAILED! => {"changed": true, "cmd": ["/usr/bin/kolide", "prepare", "db", "--config",
 ##    "/etc/kolide/kolide.yml"], "delta": "0:00:00.036057", "end": "2017-01-01 12:12:07.384928", "failed": true,
@@ -212,5 +214,7 @@
       become_user: "_kolide"
       when: not run.stdout|string
   when: (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
+
+- meta: flush_handlers
 
 - include: fleetctl.yml
