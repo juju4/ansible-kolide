@@ -38,15 +38,21 @@
   command: >
     fleetctl setup --email {{ kolide_admin_email }} --username {{ kolide_admin_name | default('admin') }} --password '{{ kolide_admin_pass }}' --org-name {{ kolide_orgname }}
   register: fleetsetup
-  changed_when: fleetctl.stderr is defined and fleetsetup.stderr != 'Kolide Fleet has already been setup'
+  changed_when: fleetctl.stdout is defined and fleetsetup.stdout == '[+] Fleet setup successful and context configured!'
   failed_when: fleetsetup.rc !=0 and fleetctl.stderr is defined and fleetsetup.stderr != 'Kolide Fleet has already been setup'
+  environment:
+    PATH: "{{ kolide_bin_prefix }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 - name: Fleetctl login
   command: >
     fleetctl login --email '{{ kolide_admin_email }}' --password '{{ kolide_admin_pass }}'
   changed_when: false
+  environment:
+    PATH: "{{ kolide_bin_prefix }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # FIXME! idempotency
 - name: Configure fleet packs
   command: "fleetctl apply -f {{ item }}"
   with_items: "{{ kolide_extra_packs | default([]) }}"
+  environment:
+    PATH: "{{ kolide_bin_prefix }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
