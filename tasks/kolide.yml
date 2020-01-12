@@ -209,7 +209,22 @@
       changed_when: false
       ignore_errors: true
     - name: Docker | start fleet manually
-      shell: "nohup {{ kolide_bin_prefix }}/bin/fleet serve --config /etc/kolide/kolide.yml &"
+      shell: >
+        nohup {{ kolide_bin_prefix }}/bin/fleet serve \
+          --mysql_address={{ kolide_mysql_host }}:3306 \
+          --mysql_database={{ kolide_mysql_db }} \
+          --mysql_username={{ kolide_mysql_user }} \
+          --mysql_password='{{ kolide_mysql_pass }}' \
+          --redis_address=127.0.0.1:6379 \
+          --server_address={{ kolide_ip_listen }}:{{ kolide_port }} \
+          --server_cert={{ kolide_certificate_cert }} \
+          --server_key={{ kolide_certificate_key }} \
+          --server_tls={{ kolide_server_tls | default('true') }} \
+          --logging_json \
+          --auth_jwt_key='{{ kolide_auth_jwt_key }}' &
+      environment:
+        KOLIDE_FILESYSTEM_RESULT_LOG_FILE: "{{ kolide_logdir }}/osquery_result"
+        KOLIDE_FILESYSTEM_STATUS_LOG_FILE: "{{ kolide_logdir }}/osquery_status"
       become: yes
       become_user: "_kolide"
       when: not run.stdout|string
