@@ -1,5 +1,12 @@
 ---
 
+- name: Ensure /root/.fleet exists
+  file:
+    dest: /root/.fleet
+    state: directory
+    owner: root
+    mode: '0700'
+
 - name: Check if /root/.fleet/config exists
   stat:
     path: /root/.fleet/config
