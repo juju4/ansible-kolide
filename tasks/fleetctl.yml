@@ -38,8 +38,8 @@
   command: >
     fleetctl setup --email {{ kolide_admin_email }} --username {{ kolide_admin_name | default('admin') }} --password '{{ kolide_admin_pass }}' --org-name {{ kolide_orgname }}
   register: fleetsetup
-  changed_when: fleetsetup.stderr != 'Kolide Fleet has already been setup'
-  failed_when: fleetsetup.rc !=0 and fleetsetup.stderr != 'Kolide Fleet has already been setup'
+  changed_when: fleetctl.stderr is defined and fleetsetup.stderr != 'Kolide Fleet has already been setup'
+  failed_when: fleetsetup.rc !=0 and fleetctl.stderr is defined and fleetsetup.stderr != 'Kolide Fleet has already been setup'
 
 - name: Fleetctl login
   command: >
