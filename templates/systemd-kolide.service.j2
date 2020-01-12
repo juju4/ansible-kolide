@@ -11,6 +11,7 @@ After=redis.service
 {% endif %}
  
 [Service]
+LimitNOFILE=8192
 ## no daemon mode
 Type=simple
 ## daemon mode
