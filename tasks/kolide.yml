@@ -212,3 +212,5 @@
       become_user: "_kolide"
       when: not run.stdout|string
   when: (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
+
+- include: fleetctl.yml
