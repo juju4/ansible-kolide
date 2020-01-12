@@ -29,6 +29,10 @@
   when: >
     (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
 
+- name: Check if mysql root password updated
+  stat:
+    path: /root/.ansible_mysqlpass
+  register: mysqlpass
 - block:
 ## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
     - name: recover mysqld temporary password
@@ -41,6 +45,13 @@
       set_fact:
         mysql_user: root
         mysql_pass: "{{ tmppass.stdout }}"
+## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
+    - name: change mysqld root password
+      shell: >
+        mysql -u root --connect-expired-password -e "alter user 'root'@'localhost'
+          IDENTIFIED WITH mysql_native_password BY '{{ kolide_mysql_root_pass }}';"
+      ignore_errors: true
+      delegate_to: "{{ kolide_mysql_host }}"
     - name: install mysql local configuration for root user
       template:
         src: my.cnf.j2
@@ -60,8 +71,12 @@
         dest: /root/.my.cnf
         state: absent
       delegate_to: "{{ kolide_mysql_host }}"
+    - name: Add mysql marker
+      file:
+        dest: /root/.ansible_mysqlpass
+        state: touch
   when: >
-    ansible_os_family == 'RedHat'
+    ansible_os_family == 'RedHat' and not mysqlpass.stat.exists
 
 - name: Create kolide mysql database
   mysql_db:
