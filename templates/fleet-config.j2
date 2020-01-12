@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+# /root/.fleet/config
+contexts:
+  default:
+    address: https://{{ kolide_ip_listen }}:{{ kolide_port }}
+    email: {{ kolide_admin_email }}
+    rootca: ""
+    tls-skip-verify: {{ kolide_tlsskipverify | default('true') }}
+    url-prefix: ""

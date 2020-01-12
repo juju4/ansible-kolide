@@ -6,7 +6,12 @@ kolide_fleet_hash: 'sha256:830e6ede3637f6d3794018cc6d054ffe2af997c29de2a79898fb7
 
 kolide_ip_listen: 0.0.0.0
 kolide_port: 8080
-#kolide_admin_email: 'changethis@example.com'
+kolide_admin_email: 'changethis@example.com'
+kolide_admin_name: admin
+kolide_admin_pass: 'admin1234#'
+kolide_admin_orgname: KolideFleetOrg
+
+#kolide_extra_packs: []
 
 kolide_uid: 902
 kolide_bin_prefix: /usr/local

@@ -1,0 +1,45 @@
+---
+
+- name: Check if /root/.fleet/config exists
+  stat:
+    path: /root/.fleet/config
+  register: dotfleet
+
+- block:
+    - name: Ensure /root/.fleet/config is setup
+      template:
+        src: "{{ dotfleetcfg_template | default('fleet-config.j2') }}"
+        dest: /root/.fleet/config
+        owner: root
+        mode: '0600'
+  when: not dotfleet.stat.exists
+- block:
+    - name: Ensure /root/.fleet/config is setup appropriately
+      replace:
+        dest: /root/.fleet/config
+        regexp: "{{ item.re }}"
+        replace: "{{ item.rep }}"
+        owner: root
+        mode: '0600'
+      with_items:
+        - { re: '^    address: .*', rep: "    address: https://{{ kolide_ip_listen }}:{{ kolide_port }}" }
+        - { re: '^    tls-skip-verify: .*', rep: "    tls-skip-verify: {{ kolide_tlsskipverify | default('true') }}" }
+        - { re: '^    email: .*', rep: "    email: {{ kolide_admin_email }}" }
+  when: dotfleet.stat.exists
+
+- name: Setup admin user and token
+  command: >
+    fleetctl setup --email {{ kolide_admin_email }} --username {{ kolide_admin_name | default('admin') }} --password '{{ kolide_admin_pass }}' --org-name {{ kolide_orgname }}
+  register: fleetsetup
+  changed_when: fleetsetup.stderr != 'Kolide Fleet has already been setup'
+  failed_when: fleetsetup.rc !=0 and fleetsetup.stderr != 'Kolide Fleet has already been setup'
+
+- name: Fleetctl login
+  command: >
+    fleetctl login --email '{{ kolide_admin_email }}' --password '{{ kolide_admin_pass }}'
+  changed_when: false
+
+# FIXME! idempotency
+- name: Configure fleet packs
+  command: "fleetctl apply -f {{ item }}"
+  with_items: "{{ kolide_extra_packs | default([]) }}"
