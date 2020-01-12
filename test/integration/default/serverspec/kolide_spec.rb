@@ -52,7 +52,7 @@ describe command('curl -vk -X POST https://localhost:8080/api/v1/osquery/enroll'
 #  its(:stderr) { should match /HTTP\/1.1 500 / }
 #  its(:exit_status) { should_not eq 0 }
 end
-describe command('curl -vk -X POST https://localhost:8080/hosts/manage') do
+describe command('curl -vk https://localhost:8080/hosts/manage') do
   its(:stdout) { should match /<title>Kolide Fleet<\/title>/ }
   its(:stderr) { should match /GET \/hosts\/manage/ }
   its(:stderr) { should match /HTTP\/2 200/ }
@@ -60,6 +60,7 @@ describe command('curl -vk -X POST https://localhost:8080/hosts/manage') do
 end
 
 describe command('fleetctl get options') do
+  let(:pre_command) { 'fleetctl login --email changethis@example.com --password admin1234' }
   its(:stdout) { should match /apiVersion: v1/ }
   its(:stdout) { should match /- SELECT uuid AS host_uuid FROM system_info;/ }
   its(:exit_status) { should_not eq 0 }
