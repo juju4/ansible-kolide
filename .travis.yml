@@ -23,9 +23,9 @@ env:
 #    version: 12.04
 #  - distribution: alpine
 #    version: 3.4
-  - distribution: ubuntu
-    version: 18.04
-    suite: default-8888
+#  - distribution: ubuntu
+#    version: 18.04
+#    suite: default-8888
 
 before_install:
   - env
