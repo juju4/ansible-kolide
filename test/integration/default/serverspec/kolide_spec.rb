@@ -55,7 +55,7 @@ end
 describe command('curl -vk https://localhost:8080/hosts/manage') do
   its(:stdout) { should match /<title>Kolide Fleet<\/title>/ }
   its(:stderr) { should match /GET \/hosts\/manage/ }
-  its(:stderr) { should match /HTTP\/2 200/ }
+  its(:stderr) { should match /HTTP\/.* 200/ }
   its(:exit_status) { should_not eq 1 }
 end
 
