@@ -9,7 +9,10 @@
 - include: fleet.yml
 
 - include: mysql.yml
-  when: kolide_mysql_enable
+  when: kolide_mysql_enable and kolide_mysql_host == 'localhost'
+
+- include: mysql-delegate.yml
+  when: kolide_mysql_enable and kolide_mysql_host != 'localhost'
 
 - include: mysql-azure.yml
   when: kolide_mysqlazure_enable
