@@ -214,6 +214,11 @@
       become: yes
       become_user: "_kolide"
       when: not run.stdout|string
+    - name: Docker | check if fleet running after
+      command: pgrep fleet
+      register: run
+      changed_when: false
+      ignore_errors: true
   when: (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
 
 - include: fleetctl.yml
