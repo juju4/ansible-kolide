@@ -24,7 +24,7 @@
   become: no
 
 - name: Query Azure MySQL Servers in current resource group
-  azure_rm_mysqlserver_facts:
+  azure_rm_mysqlserver_info:
     resource_group: "{{ kolide_mysqlazure_rg }}"
   register: mysqlserverfacts
   delegate_to: localhost
