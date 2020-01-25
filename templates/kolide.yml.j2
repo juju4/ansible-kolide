@@ -12,7 +12,7 @@ redis:
   password: {{ kolide_redis_requirepass }}
 {% endif %}
 server:
-  server_address: {{ kolide_ip_listen }}:{{ kolide_port }}
+  address: {{ kolide_ip_listen }}:{{ kolide_port }}
   cert: {{ kolide_certificate_cert }}
   key: {{ kolide_certificate_key }}
   tls: {{ kolide_server_tls | default('true') }}
