@@ -24,7 +24,7 @@
   become: no
 
 - name: Query Azure MySQL Servers in current resource group
-  azure_rm_mysqlserver_facts:
+  azure_rm_mysqlserver_info:
     resource_group: "{{ kolide_mysqlazure_rg }}"
   register: mysqlserverfacts
   delegate_to: localhost
@@ -60,14 +60,14 @@
   become: no
   when: "ansible_version.full is version_compare('2.8', '<')"
 
-#- name: Open firewall to access MySQL Server from allowed source IPs - >=2.8
-#  azure_rm_mysqlfirewallrule:
-#    resource_group: "{{ kolide_mysqlazure_rg }}"
-#    server_name: "{{ kolide_mysqlazure_name }}"
-#    name: "firewallrule-allow-src-{{ item }}"
-#    start_ip_address: "{{ item }}"
-#    end_ip_address: "{{ item }}"
-#  with_items: "{{ kolide_mysqlazure_allowed_srcip }}"
-#  delegate_to: localhost
-#  become: no
-#  when: "ansible_version.full is version_compare('2.8', '>=')"
+- name: Open firewall to access MySQL Server from allowed source IPs - >=2.8
+  azure_rm_mysqlfirewallrule:
+    resource_group: "{{ kolide_mysqlazure_rg }}"
+    server_name: "{{ kolide_mysqlazure_name }}"
+    name: "firewallrule-allow-src-{{ item }}"
+    start_ip_address: "{{ item }}"
+    end_ip_address: "{{ item }}"
+  with_items: "{{ kolide_mysqlazure_allowed_srcip }}"
+  delegate_to: localhost
+  become: no
+  when: "ansible_version.full is version_compare('2.8', '>=')"
