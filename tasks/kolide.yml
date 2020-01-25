@@ -148,6 +148,8 @@
             -NBe 'select value from options where name="logger_snapshot_event_type" and type=2;;' \
             {{ kolide_mysql_db }}
       register: snapcfg
+      changed_when: false
+      ignore_errors: true
     - name: Set snapshot events to be split into multiple events
       command: >
         mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
