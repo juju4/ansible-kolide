@@ -13,6 +13,7 @@ It was tested on the following versions:
  * 2.2
  * 2.3
  * 2.5
+ * 2.9
 
 ### Operating systems
 
@@ -78,6 +79,7 @@ FAIL 20161118212436_CreateTableDistributedQueryCampaigns.go (Error 1293: In    c
 ```
 = Use more recent mysql variant
 
+* mysql-azure tasks file uses some module requiring ansible 2.9+. If you must use an older ansible version, either not include this file or adapt it.
 
 ## License
 
