@@ -67,5 +67,9 @@ kolide_certificate_cert: ''
 #kolide_certificate_cert: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
 kolide_certificate_cert_fullchain: "{{ kolide_homedir }}/kolide/conf/start/docker/tls/kolide_fullchain.crt"
 kolide_certificate_root_ca: ''
-kolide_certinfo: '/C=US/ST=CA/L=San Francisco/O=Ansible kolide'
-kolide_certduration: 365
+kolide_cert_organization_name: 'Fleet by Ansible'
+kolide_cert_san: ""
+kolide_cert_email: ""
+kolide_certduration: '+365d'
+kolide_cert_retrieve: false
+kolide_cert_retrieve_dstpath: 'fleet.crt'
