@@ -60,6 +60,7 @@ kolide_mysqlazure_allowed_srcip: []
 #  - DEBUG
 
 kolide_cn: kolide
+kolide_cert_san: "DNS:kolide"
 kolide_certificate_key: ''
 kolide_certificate_cert: ''
 ## above empty value, will trigger self-signed certificate with following path
@@ -68,7 +69,6 @@ kolide_certificate_cert: ''
 kolide_certificate_cert_fullchain: "{{ kolide_homedir }}/kolide/conf/start/docker/tls/kolide_fullchain.crt"
 kolide_certificate_root_ca: ''
 kolide_cert_organization_name: 'Fleet by Ansible'
-kolide_cert_san: ""
 kolide_cert_email: ""
 kolide_certduration: '+365d'
 kolide_cert_retrieve: false
