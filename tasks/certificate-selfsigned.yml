@@ -45,10 +45,10 @@
     provider: selfsigned
 
 - name: Retrieve fleet certificate to orchestrator
-  net_get:
+  fetch:
     src: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
     dest: "{{ kolide_cert_retrieve_dstpath }}"
-    protocol: sftp
+    flat: true
   when: kolide_cert_retrieve
 
 - name: Validate private key file permissions
