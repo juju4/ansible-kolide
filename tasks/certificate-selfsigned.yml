@@ -17,6 +17,11 @@
   register: pkg_result
   until: pkg_result is success
 
+- name: Ensure python cryptography is present
+  pip:
+    name: cryptography
+    state: present
+
 - name: Check if OpenSSL private key exists
   stat:
     path: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
