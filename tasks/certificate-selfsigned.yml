@@ -24,6 +24,7 @@
   pip:
     name: cryptography
     state: present
+    executable: pip3
 
 - name: Check if OpenSSL private key exists
   stat:
