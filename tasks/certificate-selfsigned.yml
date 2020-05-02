@@ -2,7 +2,10 @@
 
 - name: Ensure openssl is present
   package:
-    name: openssl
+    name:
+      - openssl
+      - python3-pip
+      - python3-setuptools
     state: present
   register: pkg_result
   until: pkg_result is success
