@@ -4,7 +4,7 @@ kolide_pkgs:
   - acl
   - unzip
   - iproute2
-  - python-pymysql
+  - python3-pymysql
 
 #kolide_mysqlserver_pkgs:
 #  - mysql-server
