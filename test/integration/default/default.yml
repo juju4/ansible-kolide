@@ -29,6 +29,11 @@
         - SREM
         - RENAME
         - DEBUG
+  pre_tasks:
+    - name: Ubuntu | set python3-mysqldb instead of default python-mysqldb
+      set_fact:
+        mysql_python_package_debian: python3-mysqldb
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18)
   roles:
     - { role: geerlingguy.mysql, when: ansible_os_family == 'Debian' }
     - juju4.kolide
