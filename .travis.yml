@@ -12,15 +12,11 @@ env:
     version: 7
     suite: default
   - distribution: ubuntu
-    version: 18.04
+    version: 20.04
     suite: default
   - distribution: ubuntu
-    version: 16.04
+    version: 18.04
     suite: default
-#  - distribution: ubuntu
-#    version: 14.04
-#  - distribution: ubuntu
-#    version: 12.04
 #  - distribution: alpine
 #    version: 3.4
 #  - distribution: ubuntu
