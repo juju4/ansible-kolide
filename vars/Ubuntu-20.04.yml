@@ -9,6 +9,11 @@ kolide_pkgs:
 #kolide_mysqlserver_pkgs:
 #  - mysql-server
 
+kolide_openssl_python_pip: pip3
+kolide_openssl_python_pkgs:
+  - python3-pip
+  - python3-setuptools
+
 mysql_svc: mysql
 
 ssl_user: ssl-cert

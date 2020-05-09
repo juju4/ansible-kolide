@@ -4,8 +4,7 @@
   package:
     name:
       - openssl
-      - python3-pip
-      - python3-setuptools
+      - "{{ kolide_openssl_python_pkgs | default([ 'python-pip', 'python-setuptools']) }}"
     state: present
   register: pkg_result
   until: pkg_result is success
@@ -24,7 +23,7 @@
   pip:
     name: cryptography
     state: present
-    executable: pip3
+    executable: "{{ kolide_openssl_python_pip | default('pip') }}"
 
 - name: Check if OpenSSL private key exists
   stat:
