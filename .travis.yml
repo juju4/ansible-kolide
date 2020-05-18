@@ -17,6 +17,7 @@ env:
   - distribution: ubuntu
     version: 18.04
     suite: default
+    ANSIBLE_EXTRA_FLAGS: "'-e ansible_python_interpreter=/usr/bin/python3'"
 #  - distribution: alpine
 #    version: 3.4
 #  - distribution: ubuntu
