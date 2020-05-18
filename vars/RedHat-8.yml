@@ -8,6 +8,9 @@ kolide_pkgs:
 ## kitchen/serverspec/ss
   - iproute
 
+kolide_openssl_python_pip: pip3.6
+kolide_openssl_python_bin: python3
+
 kolide_mysqlserver_pkgs:
   - mysql-server
 #  - mariadb
