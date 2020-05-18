@@ -4,7 +4,8 @@
   package:
     name:
       - openssl
-      - "{{ kolide_openssl_python_pkgs | default([ 'python-pip', 'python-setuptools']) }}"
+      - "{{ kolide_openssl_python_bin | default('python') }}-pip"
+      - "{{ kolide_openssl_python_bin | default('python') }}-setuptools"
     state: present
   register: pkg_result
   until: pkg_result is success
