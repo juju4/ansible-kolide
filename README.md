@@ -81,6 +81,11 @@ FAIL 20161118212436_CreateTableDistributedQueryCampaigns.go (Error 1293: In    c
 
 * mysql-azure tasks file uses some module requiring ansible 2.9+. If you must use an older ansible version, either not include this file or adapt it.
 
+## Links
+
+* https://github.com/teoseller/osquery-attck
+* https://github.com/palantir/osquery-configuration
+
 ## License
 
 BSD 2-clause
