@@ -38,5 +38,5 @@
       apt: name=python3-mysqldb state=present
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18)
   roles:
-    - { role: geerlingguy.mysql, when: ansible_os_family == 'Debian' }
+    - geerlingguy.mysql
     - juju4.kolide

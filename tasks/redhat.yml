@@ -1,9 +1,1 @@
 ---
-
-- name: add mysql community yum repository
-  yum:
-    name: http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
-    state: present
-  register: pkg_result
-  until: pkg_result is success
-  when: kolide_mysql_enable
