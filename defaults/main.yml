@@ -1,8 +1,8 @@
 ---
 
 #kolide_fleet_url: https://dl.kolide.co/bin/fleet_latest.zip
-kolide_fleet_url: https://github.com/kolide/fleet/releases/download/2.4.0/fleet.zip
-kolide_fleet_hash: 'sha256:830e6ede3637f6d3794018cc6d054ffe2af997c29de2a79898fb795ee8e1f3a5'
+kolide_fleet_url: https://github.com/kolide/fleet/releases/download/3.1.0/fleet.zip
+kolide_fleet_hash: 'sha256:6e5e8a733ce88c3506d7e637444cbfa34be702c1d9c5daf1625a2a19c5960398'
 
 kolide_ip_listen: 0.0.0.0
 kolide_port: 8080
