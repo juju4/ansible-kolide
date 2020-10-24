@@ -4,8 +4,8 @@
   vars:
     - mysql_root_password: 'Toor=2017.'
     - kolide_mysql_root_pass: "{{ mysql_root_password }}"
-    - kolide_enrollment_secret: 'secret'
-    - osquery_enroll_secret: "{{ kolide_enrollment_secret }}"
+#    - kolide_enrollment_secret: 'secret'
+#    - osquery_enroll_secret: "{{ kolide_enrollment_secret }}"
     - mysql_databases:
         - name: "{{ kolide_mysql_db }}"
     - mysql_users:
