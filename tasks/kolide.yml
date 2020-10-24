@@ -125,23 +125,6 @@
 ##  '<useremail>',1,1,0,'','');
 
 - block:
-    - name: Check osquery_enroll_secret
-      command: >
-         mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
-            -NBe 'select osquery_enroll_secret from app_configs where id=1;' \
-            {{ kolide_mysql_db }}
-      register: enrollcheck
-      changed_when: false
-      ignore_errors: true
-    - name: Set osquery_enroll_secret
-      command: >
-         mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
-            -NBe 'update app_configs set osquery_enroll_secret = "{{ kolide_enrollment_secret }}" where id=1;' \
-            {{ kolide_mysql_db }}
-      when: enrollcheck.rc !=0 or enrollcheck.stdout != kolide_enrollment_secret
-  when: kolide_enrollment_secret is defined and kolide_enrollment_secret|string
-
-- block:
     - name: Get snapshot events fleet config
       command: >
         mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \

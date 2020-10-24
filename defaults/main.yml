@@ -38,7 +38,6 @@ kolide_mysqlazure_name: kolide0mysqlserver
 kolide_mysqlazure_allowed_srcip: []
 
 # if want to force it
-# kolide_enrollment_secret: 'secret'
 # kolide_snapshot_split_enable: false
 
 # not implemented in geerlingguy.redis
