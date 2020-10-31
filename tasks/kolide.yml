@@ -125,23 +125,6 @@
 ##  '<useremail>',1,1,0,'','');
 
 - block:
-    - name: Get snapshot events fleet config
-      command: >
-        mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
-            -NBe 'select value from options where name="logger_snapshot_event_type" and type=2;;' \
-            {{ kolide_mysql_db }}
-      register: snapcfg
-      changed_when: false
-      ignore_errors: true
-    - name: Set snapshot events to be split into multiple events
-      command: >
-        mysql -u {{ kolide_mysql_user }} --password='{{ kolide_mysql_pass }}' \
-            -NBe 'insert into options (name, type, value) values ("logger_snapshot_event_type", 2, "true") ON DUPLICATE KEY UPDATE type=2, value="true";' \
-            {{ kolide_mysql_db }}
-      when: snapcfg.rc != 0 and snapcfg.stdout != "true"
-  when: kolide_snapshot_split_enable is defined and kolide_snapshot_split_enable|string
-
-- block:
     - name: install kolide systemd configuration
       template:
         src: "systemd-{{ item }}.service.j2"
