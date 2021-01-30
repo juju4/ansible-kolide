@@ -34,6 +34,7 @@ jobs:
           cd $GITHUB_WORKSPACE/juju4.kolide
           [ -f get-dependencies.sh ] && sh -x get-dependencies.sh
           { echo '[defaults]'; echo 'callback_whitelist = profile_tasks, timer'; echo 'roles_path = ../'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
+          apt-get -y install python3-pymysql
       - name: yamllint
         run: |
           pwd
