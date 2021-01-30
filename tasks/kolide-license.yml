@@ -10,6 +10,7 @@
   template:
     src: my.cnf.j2
     dest: "{{ kolide_homedir }}/.my.cnf"
+    mode: '0600'
     owner: _kolide
   when: kolide_mysql_enable
 
@@ -20,7 +21,7 @@
   become_user: _kolide
   register: currentlicense
   when: kolide_mysql_enable
-#- debug: var=currentlicense
+# - debug: var=currentlicense
 
 - block:
     - name: recover certificate content
@@ -48,4 +49,4 @@
   become_user: _kolide
   register: currentlicense
   when: kolide_mysql_enable
-#- debug: var=currentlicense
+# - debug: var=currentlicense

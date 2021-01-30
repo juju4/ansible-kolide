@@ -58,7 +58,7 @@
 - name: Set fact jwt key
   set_fact:
     kolide_auth_jwt_key: "{{ rand.stdout }}"
-#    api_secret: "{{ rand.stdout }}"
+    # api_secret: "{{ rand.stdout }}"
   no_log: true
 
 - block:
@@ -94,7 +94,7 @@
     dest: "/etc/kolide/kolide.yml"
     mode: '0644'
     backup: yes
-    #validate: 'ruby -e "require \'yaml\'; YAML.load_file(\'%s\')"'
+    # validate: 'ruby -e "require \'yaml\'; YAML.load_file(\'%s\')"'
 
 ## FIXME/centos7! FAILED! => {"changed": true, "cmd": ["/usr/bin/kolide", "prepare", "db", "--config",
 ##    "/etc/kolide/kolide.yml"], "delta": "0:00:00.036057", "end": "2017-01-01 12:12:07.384928", "failed": true,
@@ -112,7 +112,10 @@
       environment:
         PATH: /usr/local/bin:/usr/bin:/bin
     - name: add db prepare marker
-      file: dest=/etc/kolide/.preparedb state=touch
+      file:
+        dest: /etc/kolide/.preparedb
+        mode: '0600'
+        state: touch
   when:
     not db.stat.exists and
     kolide_mysql_configure and

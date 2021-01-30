@@ -11,6 +11,7 @@
   unarchive:
     src: "/var/tmp/fleet.zip"
     dest: /var/tmp
+    mode: '0755'
     creates: /var/tmp/linux/fleet
     remote_src: yes
 

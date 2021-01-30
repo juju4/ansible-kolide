@@ -1,6 +1,6 @@
 ---
 
-#kolide_fleet_url: https://dl.kolide.co/bin/fleet_latest.zip
+# kolide_fleet_url: https://dl.kolide.co/bin/fleet_latest.zip
 kolide_fleet_url: https://github.com/kolide/fleet/releases/download/3.1.0/fleet.zip
 kolide_fleet_hash: 'sha256:6e5e8a733ce88c3506d7e637444cbfa34be702c1d9c5daf1625a2a19c5960398'
 
@@ -11,7 +11,7 @@ kolide_admin_name: admin
 kolide_admin_pass: 'admin1234#'
 kolide_orgname: KolideFleetOrg
 
-#kolide_extra_packs: []
+# kolide_extra_packs: []
 
 kolide_uid: 902
 kolide_bin_prefix: /usr/local
@@ -31,15 +31,15 @@ kolide_mysql_user: kolide
 kolide_mysql_pass: "Kolide!2017@"
 kolide_mysql_db: kolidedb
 kolide_mysql_root_user: root
-#kolide_mysql_root_pass: "{{ mysql_root_password | default('Toor=2017.') }}"
+# kolide_mysql_root_pass: "{{ mysql_root_password | default('Toor=2017.') }}"
 kolide_mysqlazure_enable: false
 kolide_mysqlazure_rg: kolide0
 kolide_mysqlazure_name: kolide0mysqlserver
 kolide_mysqlazure_allowed_srcip: []
 
 # not implemented in geerlingguy.redis
-#kolide_redis_requirepass: "redis_password_to_change"
-#kolide_redis_disabled_commands:
+# kolide_redis_requirepass: "redis_password_to_change"
+# kolide_redis_disabled_commands:
 #  - FLUSHDB
 #  - FLUSHALL
 #  - KEYS
@@ -60,8 +60,8 @@ kolide_cert_san: "DNS:kolide"
 kolide_certificate_key: ''
 kolide_certificate_cert: ''
 ## above empty value, will trigger self-signed certificate with following path
-#kolide_certificate_key: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
-#kolide_certificate_cert: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
+# kolide_certificate_key: "{{ ssl_privatedir }}/{{ ansible_fqdn }}.key"
+# kolide_certificate_cert: "{{ ssl_dir }}/{{ ansible_fqdn }}.crt"
 kolide_certificate_cert_fullchain: "{{ kolide_homedir }}/kolide/conf/start/docker/tls/kolide_fullchain.crt"
 kolide_certificate_root_ca: ''
 kolide_cert_organization_name: 'Fleet by Ansible'
