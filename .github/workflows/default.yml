@@ -64,6 +64,8 @@ jobs:
           host www.google.com
           ping -c 1 www.google.com
           ping -c 1 8.8.8.8
+          cat ~/.my.cnf
+          cat /etc/my.cnf
         if: ${{ failure() }}
       - name: After script - systemd
         run: |
