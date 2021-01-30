@@ -11,17 +11,17 @@
     - mysql_users:
         - name: "{{ kolide_mysql_user }}"
           host: "localhost"
-          #host: "%"
+          # host: "%"
           password: "{{ kolide_mysql_pass }}"
           priv: "{{ kolide_mysql_db }}.*:ALL"
     - mysql_enablerepo: epel
   roles:
     - { role: geerlingguy.mysql, when: ansible_os_family == 'Debian' }
-#    - juju4.harden
-#    - juju4.ntpclient
-#    - juju4.osquery
-#    - juju4.falco
-#    - juju4.syslogclient
-#    - juju4.harden_mailserver
-#    - juju4.smarthostclient
+    # - juju4.harden
+    # - juju4.ntpclient
+    # - juju4.osquery
+    # - juju4.falco
+    # - juju4.syslogclient
+    # - juju4.harden_mailserver
+    # - juju4.smarthostclient
     - juju4.kolide

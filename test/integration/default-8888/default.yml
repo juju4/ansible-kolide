@@ -9,7 +9,7 @@
     - mysql_users:
         - name: "{{ kolide_mysql_user }}"
           host: "localhost"
-          #host: "%"
+          # host: "%"
           password: "{{ kolide_mysql_pass }}"
           priv: "{{ kolide_mysql_db }}.*:ALL"
     - mysql_enablerepo: epel

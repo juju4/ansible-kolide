@@ -34,7 +34,7 @@
     path: /root/.ansible_mysqlpass
   register: mysqlpass
 - block:
-## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
+    ## http://mysqlserverteam.com/initialize-your-mysql-5-7-instances-with-ease/
     - name: recover mysqld temporary password
       command: "awk '/temporary password/ { print $NF }' {{ mysql_log }}"
       register: tmppass
@@ -45,7 +45,7 @@
       set_fact:
         mysql_user: root
         mysql_pass: "{{ tmppass.stdout }}"
-## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
+    ## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
     - name: change mysqld root password
       shell: >
         mysql -u root --connect-expired-password -e "alter user 'root'@'localhost'
@@ -59,7 +59,7 @@
         mode: '0600'
         backup: yes
       delegate_to: "{{ kolide_mysql_host }}"
-## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
+    ## https://www.percona.com/blog/2016/03/16/change-user-password-in-mysql-5-7-with-plugin-auth_socket/
     - name: change mysqld root password
       shell: >
         mysql -u root --connect-expired-password -e "alter user 'root'@'localhost'
@@ -74,6 +74,7 @@
     - name: Add mysql marker
       file:
         dest: /root/.ansible_mysqlpass
+        mode: '0600'
         state: touch
   when: >
     ansible_os_family == 'RedHat' and not mysqlpass.stat.exists
@@ -116,6 +117,7 @@
     - name: add restoration marker
       file:
         dest: "/root/.kolide_mysql_restore-{{ restorefile.stat.checksum }}"
+        mode: '0600'
         state: touch
       when: restorefile.stat.exists and not restored.stat.exists
   when: kolide_mysql_backup_restore

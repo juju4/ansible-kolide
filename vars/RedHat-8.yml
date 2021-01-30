@@ -5,7 +5,7 @@ kolide_pkgs:
   - python3-PyMySQL
   - acl
   - unzip
-## kitchen/serverspec/ss
+  ## kitchen/serverspec/ss
   - iproute
 
 kolide_openssl_python_pip: pip3.6
@@ -13,11 +13,11 @@ kolide_openssl_python_bin: python3
 
 kolide_mysqlserver_pkgs:
   - mysql-server
-#  - mariadb
-#  - mariadb-server
+  # - mariadb
+  # - mariadb-server
 
 mysql_svc: mysqld
-#mysql_svc: mariadb
+# mysql_svc: mariadb
 
 mysql_log: /var/log/mysql/mysqld.log
 

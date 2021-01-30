@@ -52,7 +52,7 @@
 
 # FIXME! idempotency
 - name: Configure fleet packs
-  command: "fleetctl apply -f {{ item }}" # noqa 301
+  command: "fleetctl apply -f {{ item }}"  # noqa 301
   with_items: "{{ kolide_extra_packs | default([]) }}"
   environment:
     PATH: "{{ kolide_bin_prefix }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

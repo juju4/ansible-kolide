@@ -6,8 +6,8 @@ kolide_pkgs:
   - iproute2
   - python3-pymysql
 
-#kolide_mysqlserver_pkgs:
-#  - mysql-server
+# kolide_mysqlserver_pkgs:
+#   - mysql-server
 
 kolide_openssl_python_pip: pip3
 kolide_openssl_python_bin: python3

@@ -15,31 +15,29 @@ env:
     version: 18.04
     suite: default
     ANSIBLE_EXTRA_FLAGS: "'-e ansible_python_interpreter=/usr/bin/python3'"
-#  - distribution: alpine
-#    version: 3.4
-#  - distribution: ubuntu
-#    version: 18.04
-#    suite: default-8888
+    # - distribution: ubuntu
+    #   version: 18.04
+    #   suite: default-8888
 
 before_install:
   - env
   - pwd
   - find -ls
-## use appropriate role path and not github name
+  ## use appropriate role path and not github name
   - "[ -f get-dependencies.sh ] && sh -x get-dependencies.sh"
   - echo "deb http://archive.ubuntu.com/ubuntu xenial-backports main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/xenial-backports.list
   - sudo apt-get update -qq
   - sudo apt -t xenial-backports -y install lxd acl dnsmasq-base zfsutils-linux rng-tools -q
-## change of group implies logout+login to apply... can't do with travis = run as root (sic)    = use 'newgrp lxd' ? = travis stalling all ...
-## https://github.com/travis-ci/travis-ci/issues/1839   or chain: sudo -E su $USER -c "..."
+  ## change of group implies logout+login to apply... can't do with travis = run as root (sic)    = use 'newgrp lxd' ? = travis stalling all ...
+  ## https://github.com/travis-ci/travis-ci/issues/1839   or chain: sudo -E su $USER -c "..."
   - sudo usermod -G lxd travis
   # Pull container
   - sudo -E su $USER -c "lxc remote list"
   - sudo -E su $USER -c "lxc image list"
-## pre-download base images
+  ## pre-download base images
   - 'sudo -E su $USER -c "[ ${distribution} == ubuntu ] || lxc image copy images:${distribution}/${version}/amd64 local: --alias=${distribution}-${version}-nossh"'
   - 'sudo -E su $USER -c "[ ${distribution} == ubuntu ] && lxc image copy ubuntu:${version} local: --alias=${distribution}-${version}" || true'
-## configure network
+  ## configure network
   - ifconfig -a
   - sudo lxc info
   - sudo lxc network list
@@ -52,7 +50,7 @@ before_install:
   - systemctl status -l --no-pager lxd || true
   - cat /etc/network/interfaces.d/50-cloud-init.cfg
   - sudo lxc network list
-# configure storage pool
+  # configure storage pool
   - sudo lxc storage list
   - sudo lxc storage create pool1 zfs
   - sudo lxc storage list
@@ -67,21 +65,21 @@ before_install:
   - gem install kitchen-lxd_cli
   - gem list
   - which kitchen
-## ssh key for lxd_cli ?
+  ## ssh key for lxd_cli ?
   - ls ~/.ssh
   - ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -P ""
-## sudo/su get us a non-usual PATH ...
+  ## sudo/su get us a non-usual PATH ...
   - '[ "X${distribution}" == "Xcentos" ] && sudo -E su $USER -c "sh -x ./test/lxd/centos-ssh-image.sh ${version}" || true'
   - sudo -E su $USER -c "env"
-## The command "sudo -E su $USER -c "which kitchen"" failed and exited with 1 during .
-#  - sudo -E su $USER -c "which kitchen"
+  ## The command "sudo -E su $USER -c "which kitchen"" failed and exited with 1 during .
+  # - sudo -E su $USER -c "which kitchen"
   - sudo -E su $USER -c "env PATH=$PATH kitchen diagnose --all"
-#  - sudo -E su $USER -c "kitchen diagnose --all"
-#  - sudo -E -u $USER kitchen diagnose --all
+  # - sudo -E su $USER -c "kitchen diagnose --all"
+  # - sudo -E -u $USER kitchen diagnose --all
 
 script:
   - ansible-lint tasks/main.yml || true
-#  - KITCHEN_LOCAL_YAML=.kitchen.local.yml bundle exec kitchen verify ${INSTANCE}
+  # - KITCHEN_LOCAL_YAML=.kitchen.local.yml bundle exec kitchen verify ${INSTANCE}
   - sudo -E su $USER -c "env PATH=$PATH kitchen verify ${suite}-${distribution}-${version//./} -l debug || (cat $HOME/.kitchen/logs/${suite}-${distribution}-${version//./}.log; find /tmp/kitchen)"
 
 after_failure:

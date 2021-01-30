@@ -6,16 +6,16 @@ kolide_pkgs:
   - acl
   - unzip
   - MySQL-python
-## kitchen/serverspec/ss
+  ## kitchen/serverspec/ss
   - iproute
 
 kolide_mysqlserver_pkgs:
   - mysql-server
-#  - mariadb
-#  - mariadb-server
+  # - mariadb
+  # - mariadb-server
 
 mysql_svc: mysqld
-#mysql_svc: mariadb
+# mysql_svc: mariadb
 
 mysql_log: /var/log/mysqld.log
 

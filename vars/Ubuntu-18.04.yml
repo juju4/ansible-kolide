@@ -6,8 +6,8 @@ kolide_pkgs:
   - iproute2
   - python-pymysql
 
-#kolide_mysqlserver_pkgs:
-#  - mysql-server
+# kolide_mysqlserver_pkgs:
+#   - mysql-server
 
 mysql_svc: mysql
 
