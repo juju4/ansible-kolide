@@ -16,7 +16,7 @@ jobs:
       max-parallel: 4
     env:
       ANSIBLE_CALLBACK_WHITELIST: profile_tasks
-      ANSIBLE_EXTRA_VARS: ""
+      ANSIBLE_EXTRA_VARS: "-e mysql_user_name=runner"
 
     steps:
       - uses: actions/checkout@v2
