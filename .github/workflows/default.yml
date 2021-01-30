@@ -66,6 +66,7 @@ jobs:
           ping -c 1 8.8.8.8 || true
           cat ~/.my.cnf || true
           cat /etc/my.cnf || true
+          cat /etc/mysql/my.cnf || true
         if: ${{ failure() }}
       - name: After script - systemd
         run: |
