@@ -1,5 +1,9 @@
 [![Build Status - Master](https://travis-ci.com/juju4/ansible-kolide.svg?branch=master)](https://travis-ci.com/juju4/ansible-kolide)
 [![Build Status - Devel](https://travis-ci.com/juju4/ansible-kolide.svg?branch=devel)](https://travis-ci.com/juju4/ansible-kolide/branches)
+
+[![Actions Status - Master](https://github.com/juju4/ansible-kolide/workflows/AnsibleCI/badge.svg)](https://github.com/juju4/ansible-kolide/actions?query=branch%3Amaster)
+[![Actions Status - Devel](https://github.com/juju4/ansible-kolide/workflows/AnsibleCI/badge.svg?branch=devel)](https://github.com/juju4/ansible-kolide/actions?query=branch%3Adevel)
+
 # kolide ansible role
 
 Ansible role to setup kolide, osquery central console
