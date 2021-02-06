@@ -69,17 +69,21 @@ jobs:
           cat /etc/my.cnf || true
           cat /etc/mysql/my.cnf || true
         if: ${{ failure() }}
+        continue-on-error: true
       - name: After script - systemd
         run: |
           systemctl -l --no-pager status kolide || true
           systemd-analyze security || true
           rsyslogd -v
+        if: ${{ always() }}
         continue-on-error: true
       - name: After script - setup
         run: |
-          mysql -u kolide --password=Kolide!2017@ -Be \"select * from app_configs;\" kolidedb'
-          fleetctl get options
-          fleetctl get enroll-secret
+          python3 -c 'import pymysql' || true
+          mysql -u kolide --password=Kolide!2017@ -Be \"select * from app_configs;\" kolidedb' || true
+          fleetctl get options || true
+          fleetctl get enroll-secret || true
+        if: ${{ always() }}
         continue-on-error: true
       - name: After script - curl
         run: |
@@ -89,10 +93,12 @@ jobs:
           curl -vk https://localhost:8080/api/v1/kolide/packs
           curl -vk https://localhost:8080/api/v1/kolide/hosts
           curl -vk -X POST https://localhost:8080/api/v1/osquery/enroll
+        if: ${{ always() }}
         continue-on-error: true
       - name: After script - etc
         run: |
           cat /etc/kolide/kolide.yml
+        if: ${{ always() }}
         continue-on-error: true
       - name: After script - files
         run: |
@@ -100,4 +106,6 @@ jobs:
           ls /var/log/kolide/
           ls /var/log/ /var/log/mysql/
           cat /var/log/mysqld.log
-          cat /var/log/mysql/mysqld.log        continue-on-error: true
+          cat /var/log/mysql/mysqld.log
+        if: ${{ always() }}
+        continue-on-error: true
