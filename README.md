@@ -7,8 +7,10 @@
 # kolide ansible role
 
 Ansible role to setup kolide, osquery central console
-https://kolide.co/
-(need a license to use, trial on demand)
+* https://kolide.co/
+* https://github.com/kolide/fleet
+
+Since Nov 2020, Kolide fleet is retired and repository is archived.
 
 ## Requirements & Dependencies
 
