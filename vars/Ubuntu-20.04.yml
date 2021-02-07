@@ -5,6 +5,7 @@ kolide_pkgs:
   - unzip
   - iproute2
   - python3-pymysql
+  - python3-setuptools
 
 # kolide_mysqlserver_pkgs:
 #   - mysql-server
