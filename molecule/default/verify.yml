@@ -31,30 +31,39 @@
         - { h: localhost, p: 8080 }
         - { h: "{{ ansible_default_ipv4.address }}", p: 8080 }
 
+
+    - name: Debian | Check /var/log/syslog exists
+      stat:
+        path: /var/log/syslog
+      register: syslog
     - name: Debian | Fetch content of /var/log/syslog
       slurp:
         src: /var/log/syslog
       register: log1
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' and syslog.stat.exists
     - name: Debian | Validate /var/log/syslog
       assert:
         that: >
           log1['content'] | b64decode | regex_search('kolide\[[0-9]+\]: Using config file:') and
           log1['content'] | b64decode | regex_search('kolide\[[0-9]+\]: {"address":"0.0.0.0:8080","msg":"listening","transport":') and
           not log1['content'] | b64decode | regex_search('kolide\[[0-9]+\]: .*permission denied.*')
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' and syslog.stat.exists
+    - name: RedHat | Check /var/log/messages exists
+      stat:
+        path: /var/log/messages
+      register: syslog2
     - name: RedHat | Fetch content of /var/log/messages
       slurp:
         src: /var/log/messages
       register: log2
-      when: ansible_os_family == "RedHat"
+      when: ansible_os_family == "RedHat" and syslog2.stat.exists
     - name: RedHat | Validate /var/log/messages
       assert:
         that: >
           log2['content'] | b64decode | regex_search('kolide\[[0-9]+\]: Using config file:') and
           log2['content'] | b64decode | regex_search('kolide\[[0-9]+\]: {"address":"0.0.0.0:8080","msg":"listening","transport":') and
           not log2['content'] | b64decode | regex_search('kolide\[[0-9]+\]: .*permission denied.*')
-      when: ansible_os_family == "RedHat"
+      when: ansible_os_family == "RedHat" and syslog2.stat.exists
 
     - name: Test fleet healthz
       uri:
