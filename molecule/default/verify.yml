@@ -1,0 +1,89 @@
+---
+
+- name: Verify
+  hosts: fleet
+  tasks:
+    - name: Ensure fleet config is present
+      stat:
+        path: /root/.fleet/config
+      register: cfg
+      become: yes
+    - name: Validate config present
+      assert:
+        that: cfg.stat.exists and cfg.stat.size != 0
+
+    - name: Ensure process is running
+      command: pgrep -u _kolide fleet
+      register: ps
+      changed_when: false
+      ignore_errors: true
+    - name: Validate ps output
+      assert:
+        that: ps.stdout
+      ignore_errors: true
+
+    - name: Ensure ports are listening
+      wait_for:
+        host: "{{ item.h }}"
+        port: "{{ item.p }}"
+        timeout: 10
+      with_items:
+        - { h: localhost, p: 8080 }
+        - { h: "{{ ansible_default_ipv4.address }}", p: 8080 }
+
+    - name: Debian | Fetch content of /var/log/syslog
+      slurp:
+        src: /var/log/syslog
+      register: log1
+      when: ansible_os_family == 'Debian'
+    - name: Debian | Validate /var/log/syslog
+      assert:
+        that: >
+          log1['content'] | b64decode | regex_search('kolide\[[0-9]+\]: Using config file:') and
+          log1['content'] | b64decode | regex_search('kolide\[[0-9]+\]: {"address":"0.0.0.0:8080","msg":"listening","transport":') and
+          not log1['content'] | b64decode | regex_search('kolide\[[0-9]+\]: .*permission denied.*')
+      when: ansible_os_family == 'Debian'
+    - name: RedHat | Fetch content of /var/log/messages
+      slurp:
+        src: /var/log/messages
+      register: log2
+      when: ansible_os_family == "RedHat"
+    - name: RedHat | Validate /var/log/messages
+      assert:
+        that: >
+          log2['content'] | b64decode | regex_search('kolide\[[0-9]+\]: Using config file:') and
+          log2['content'] | b64decode | regex_search('kolide\[[0-9]+\]: {"address":"0.0.0.0:8080","msg":"listening","transport":') and
+          not log2['content'] | b64decode | regex_search('kolide\[[0-9]+\]: .*permission denied.*')
+      when: ansible_os_family == "RedHat"
+
+    - name: Test fleet healthz
+      uri:
+        url: https://localhost:8080/healthz
+        return_content: yes
+        status_code: 200
+      register: fleet1
+      changed_when: false
+
+    - name: Test fleet enroll
+      uri:
+        url: https://localhost:8080/api/v1/osquery/enroll
+        method: POST
+        return_content: yes
+      register: fleet2
+      changed_when: false
+    - name: Validate fleet2
+      assert:
+        that: >
+          "'Unknown Error' in fleet2.content"
+
+    - name: Test fleet manage
+      uri:
+        url: https://localhost:8080/hosts/manage
+        return_content: yes
+        status_code: 200
+      register: fleet3
+      changed_when: false
+    - name: Validate fleet3
+      assert:
+        that: >
+          "'<title>Kolide Fleet<\/title>' in fleet3.content"

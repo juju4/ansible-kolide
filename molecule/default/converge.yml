@@ -1,0 +1,67 @@
+---
+
+- name: Converge
+  hosts: all
+  environment:
+    http_proxy: "{{ lookup('env', 'http_proxy') }}"
+    https_proxy: "{{ lookup('env', 'https_proxy') }}"
+    no_proxy: "{{ lookup('env', 'no_proxy') }}"
+  remote_user: root
+  vars:
+    - mysql_root_password: 'Toor=2017.'
+    - kolide_mysql_root_pass: "{{ mysql_root_password }}"
+    - mysql_databases:
+        - name: "{{ kolide_mysql_db }}"
+    - mysql_users:
+        - name: "{{ kolide_mysql_user }}"
+          host: "localhost"
+          # host: "%"
+          password: "{{ kolide_mysql_pass }}"
+          priv: "{{ kolide_mysql_db }}.*:ALL"
+    - mysql_enablerepo: epel
+    - kolide_redis_requirepass: "redis_password_to_change"
+    - kolide_redis_disabled_commands:
+        - FLUSHDB
+        - FLUSHALL
+        - KEYS
+        - PEXPIRE
+        - DEL
+        - CONFIG
+        - SHUTDOWN
+        - BGREWRITEAOF
+        - BGSAVE
+        - SAVE
+        - SPOP
+        - SREM
+        - RENAME
+        - DEBUG
+  pre_tasks:
+    - name: Ubuntu | Install python3
+      raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
+      register: python3
+      changed_when: "'installed' in python3.stdout"
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 16)
+    - name: RedHat | Install python3
+      raw: test -e /usr/bin/python3 || (yum install -y python3)
+      register: python3
+      changed_when: "'installed' in python3.stdout"
+      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
+    - name: Gather Facts
+      setup:
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 16)
+    - name: Ubuntu Bionic+, Redhat 8+ | Enforce python3 for ansible
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+      when: >
+        (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 16) or
+        (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
+    - name: Ubuntu | set python3-mysqldb instead of default python-mysqldb
+      set_fact:
+        mysql_python_package_debian: python3-mysqldb
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18)
+    - name: installing python-3 mysql libraries - geerlingguy.mysql#344
+      apt: name=python3-mysqldb state=present
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18)
+  roles:
+    - geerlingguy.mysql
+    - juju4.kolide
