@@ -79,8 +79,10 @@ jobs:
         continue-on-error: true
       - name: After script - setup
         run: |
+          dpkg -l | grep python
+          pip3 freeze
           python3 -c 'import pymysql' || true
-          mysql -u kolide --password=Kolide!2017@ -Be \"select * from app_configs;\" kolidedb' || true
+          mysql -u kolide --password='Kolide!2017@' -Be "select * from app_configs;" kolidedb || true
           fleetctl get options || true
           fleetctl get enroll-secret || true
         if: ${{ always() }}
