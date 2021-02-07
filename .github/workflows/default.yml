@@ -34,6 +34,9 @@ jobs:
           /usr/bin/python3 -m pip install --upgrade pip
           /usr/bin/pip3 install setuptools
           /usr/bin/pip3 install ansible-lint flake8 yamllint
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          echo $GITHUB_PATH
+          echo $PATH
           ansible --version
           cd $GITHUB_WORKSPACE/juju4.kolide
           [ -f get-dependencies.sh ] && sh -x get-dependencies.sh
