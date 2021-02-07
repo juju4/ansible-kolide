@@ -36,10 +36,14 @@
 
 - name: Setup admin user and token
   command: >
-    fleetctl setup --email {{ kolide_admin_email }} --username {{ kolide_admin_name | default('admin') }} --password '{{ kolide_admin_pass }}' --org-name {{ kolide_orgname }} # noqa 204
+    fleetctl setup --email {{ kolide_admin_email }} --username {{ kolide_admin_name | default('admin') }} --password '{{ kolide_admin_pass }}' --org-name {{ kolide_orgname }}
   register: fleetsetup
   changed_when: fleetctl.stdout is defined and fleetsetup.stdout == '[+] Fleet setup successful and context configured!'
-  failed_when: fleetsetup.rc !=0 and fleetctl.stderr is defined and fleetsetup.stderr != 'Kolide Fleet has already been setup'
+  failed_when:
+    - fleetsetup.rc != 0
+    - fleetctl.stderr is defined
+    - fleetsetup.stderr != 'Kolide Fleet has already been setup'
+    - "'error setting up Fleet' in fleetsetup.stderr"
   environment:
     PATH: "{{ kolide_bin_prefix }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
