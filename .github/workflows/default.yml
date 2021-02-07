@@ -32,6 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           /usr/bin/python3 -m pip install --upgrade pip
+          /usr/bin/pip3 install setuptools
           /usr/bin/pip3 install ansible-lint flake8 yamllint
           ansible --version
           cd $GITHUB_WORKSPACE/juju4.kolide
